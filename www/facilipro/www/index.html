@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Facilpro — Le copilote des conseillers en crédit, épargne, transmission et fiscalité</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* =========================================================
+   Styles spécifiques à la page d'accueil.
+   Complètent style.css (mêmes variables et composants).
+   Signature : la page se lit comme le sommaire d'un dossier —
+   chaque module est une entrée numérotée, pas une carte publicitaire.
+   ========================================================= */
+
+/* ---------- Ligne de repères (remplace les pastilles) ---------- */
+.meta-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:0;
+  margin-top:22px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.meta-row span{
+  padding:0 14px 0 0;
+  margin-right:14px;
+  border-right:1px solid var(--border);
+}
+.meta-row span:last-child{border-right:0;}
+
+/* ---------- Sommaire du dossier, en cases ---------- */
+
+.index-list{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:22px;
+}
+
+.index-row{
+  display:block;
+  text-decoration:none;
+  color:inherit;
+  border-radius:4px;
+  padding:28px 26px;
+  position:relative;
+  transition:transform .3s cubic-bezier(.2,.7,.3,1), box-shadow .3s ease, border-color .3s ease, background .3s ease;
+}
+a.index-row{cursor:pointer;}
+a.index-row:hover{
+  transform:translateY(-4px);
+  box-shadow:0 18px 40px -18px rgba(22,35,43,.35);
+}
+
+/* Alternance claire / sombre, comme les dossiers du simulateur de rentabilité */
+.index-row.tone-light{
+  background:var(--surface);
+  border:1px solid var(--border);
+}
+a.index-row.tone-light:hover{border-color:var(--brass);}
+.index-row.tone-dark{
+  background:var(--ink);
+  border:1px solid var(--ink);
+}
+a.index-row.tone-dark:hover{border-color:var(--brass);}
+
+.index-row-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+}
+.index-num{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.tone-light .index-num{color:var(--brass-deep);}
+.tone-dark .index-num{color:var(--brass-light);}
+.index-icon{display:flex;align-items:center;}
+
+.index-title{
+  font-family:'Fraunces',serif;
+  font-size:22px;
+  font-weight:600;
+  margin:16px 0 8px;
+}
+.tone-light .index-title{color:var(--ink);}
+.tone-dark .index-title{color:var(--surface);}
+
+.index-desc{
+  font-size:13.5px;
+  line-height:1.55;
+  margin:0 0 16px;
+}
+.tone-light .index-desc{color:var(--muted);}
+.tone-dark .index-desc{color:rgba(247,242,230,.68);}
+
+.index-tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px 16px;
+  margin-bottom:18px;
+}
+.index-tags span{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  position:relative;
+  padding-left:13px;
+}
+.tone-light .index-tags span{color:var(--muted);}
+.tone-dark .index-tags span{color:rgba(247,242,230,.55);}
+.index-tags span::before{
+  content:"–";
+  position:absolute;
+  left:0;
+  color:var(--brass);
+}
+
+.index-cta{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12.5px;
+  font-weight:600;
+  letter-spacing:.03em;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  transition:color .15s ease;
+}
+.tone-light .index-cta{color:var(--forest);}
+.tone-dark .index-cta{color:var(--brass-light);}
+.index-cta .arrow{display:inline-block;transition:transform .18s ease;}
+a.index-row:hover .index-cta .arrow{transform:translateX(4px);}
+
+/* Entrée "à venir" : non cliquable, atténuée */
+.index-row.soon{
+  cursor:default;
+  background:var(--surface);
+  border:1px dashed var(--border);
+}
+.index-row.soon .index-num,
+.index-row.soon .index-title{
+  color:var(--muted);
+}
+.index-row.soon .index-cta{
+  color:var(--muted);
+  font-style:italic;
+  text-transform:none;
+  letter-spacing:0;
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <img class="logo" src="/img/logo.png" alt="Facilpro — Le copilote des conseillers en crédit, épargne, transmission et fiscalité">
+  <p class="eyebrow">Facilpro</p>
+  <h1>Le copilote des conseillers en crédit, épargne, transmission et fiscalité</h1>
+  <p>Facilpro rassemble des outils pensés pour vos missions du quotidien : monter un dossier de crédit, éclairer une stratégie d'épargne, préparer une transmission ou vérifier une fiscalité. Tout se calcule directement dans votre navigateur, sans compte ni saisie transmise à un serveur.</p>
+  <div class="meta-row">
+    <span>100 % gratuit</span>
+    <span>Aucune donnée envoyée</span>
+    <span>Chiffres à jour au 1ᵉʳ août 2026</span>
+  </div>
+</header>
+
+<main>
+
+  <div class="index-head">
+    <h2>Sommaire</h2>
+    <span>7 modules</span>
+  </div>
+
+  <div class="index-list">
+
+    <a class="index-row tone-dark" href="simulateurs.html">
+      <div class="index-row-top">
+        <span class="index-num">DOSSIER 01</span>
+        <span class="index-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CBA96C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 L12 4 L20 12"/><path d="M6.5 10.5 V20 H17.5 V10.5"/></svg>
+        </span>
+      </div>
+      <p class="index-title">Crédit</p>
+      <p class="index-desc">Mensualité, coût total du crédit, capacité d'emprunt selon la règle des 35 % et montant empruntable à partir d'une mensualité connue.</p>
+      <div class="index-tags">
+        <span>Simulateur de prêt</span>
+        <span>Capacité d'emprunt</span>
+        <span>Montant empruntable</span>
+      </div>
+      <span class="index-cta">Ouvrir le dossier <span class="arrow">→</span></span>
+    </a>
+
+    <a class="index-row tone-dark" href="rentabilite-locative.html">
+      <div class="index-row-top">
+        <span class="index-num">DOSSIER 02</span>
+        <span class="index-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CBA96C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 L12 4 L20 12"/><path d="M6.5 10.5 V20 H17.5 V10.5"/><path d="M10 20 V15 H14 V20"/></svg>
+        </span>
+      </div>
+      <p class="index-title">Investissement locatif</p>
+      <p class="index-desc">Rentabilité brute et nette, cash-flow mensuel, financement et régime fiscal (micro-foncier, réel, LMNP) d'un projet locatif.</p>
+      <div class="index-tags">
+        <span>Simulateur simple</span>
+        <span>Simulateur avancé</span>
+        <span>Fiscalité LMNP</span>
+      </div>
+      <span class="index-cta">Ouvrir le dossier <span class="arrow">→</span></span>
+    </a>
+
+    <a class="index-row tone-dark" href="fiscalite-transmission.html">
+      <div class="index-row-top">
+        <span class="index-num">DOSSIER 03</span>
+        <span class="index-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CBA96C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1z"/><path d="M14 3.5V8h4"/><path d="M9 13h6M9 16.5h6"/></svg>
+        </span>
+      </div>
+      <p class="index-title">Transmission &amp; fiscalité</p>
+      <p class="index-desc">Calculateur de droits de donation et de succession, barème détaillé tranche par tranche, rappel fiscal des 15 ans, assurance-vie et démembrement.</p>
+      <div class="index-tags">
+        <span>Calculateur DMTG</span>
+        <span>Mémo fiscal complet</span>
+        <span>Assurance-vie</span>
+      </div>
+      <span class="index-cta">Ouvrir le dossier <span class="arrow">→</span></span>
+    </a>
+
+    <a class="index-row tone-dark" href="epargne.html">
+      <div class="index-row-top">
+        <span class="index-num">DOSSIER 04</span>
+        <span class="index-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CBA96C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.66 3.13 3 7 3s7-1.34 7-3V6"/><path d="M5 12v6c0 1.66 3.13 3 7 3s7-1.34 7-3v-6"/></svg>
+        </span>
+      </div>
+      <p class="index-title">Simulateur d'épargne</p>
+      <p class="index-desc">Versements initial et périodiques, capitalisation des intérêts et régime fiscal (livret réglementé, flat tax, assurance-vie, PEA).</p>
+      <div class="index-tags">
+        <span>Versements programmés</span>
+        <span>Flat tax &amp; barème</span>
+        <span>Assurance-vie &amp; PEA</span>
+      </div>
+      <span class="index-cta">Ouvrir le dossier <span class="arrow">→</span></span>
+    </a>
+
+    <a class="index-row tone-dark" href="per.html">
+      <div class="index-row-top">
+        <span class="index-num">DOSSIER 05</span>
+        <span class="index-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CBA96C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+        </span>
+      </div>
+      <p class="index-title">Épargne retraite (PER)</p>
+      <p class="index-desc">Économie d'impôt à l'entrée, puis comparatif sortie en capital ou en rente viagère, selon le statut, la déductibilité et la TMI.</p>
+      <div class="index-tags">
+        <span>Plafond salarié &amp; TNS</span>
+        <span>Capital vs rente</span>
+        <span>Déduit &amp; non déduit</span>
+      </div>
+      <span class="index-cta">Ouvrir le dossier <span class="arrow">→</span></span>
+    </a>
+
+    <a class="index-row tone-dark" href="livrets-epargne.html">
+      <div class="index-row-top">
+        <span class="index-num">DOSSIER 06</span>
+        <span class="index-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CBA96C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="1"/><path d="M4 9.5h16"/><path d="M8 13h3M8 16h5"/></svg>
+        </span>
+      </div>
+      <p class="index-title">Livrets et comptes d'épargne</p>
+      <p class="index-desc">Livret A, LDDS, LEP, Livret Jeune, CEL, PEL et épargne bancaire classique : plafond, versement minimum, taux et fiscalité en un coup d'œil.</p>
+      <div class="index-tags">
+        <span>Page de référence</span>
+        <span>Livrets réglementés</span>
+        <span>Épargne logement</span>
+      </div>
+      <span class="index-cta">Ouvrir le dossier <span class="arrow">→</span></span>
+    </a>
+
+    <a class="index-row tone-dark" href="epargne-financiere.html">
+      <div class="index-row-top">
+        <span class="index-num">DOSSIER 07</span>
+        <span class="index-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CBA96C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 8-8"/><path d="M14 8h6v6"/></svg>
+        </span>
+      </div>
+      <p class="index-title">Comptes-titres, PEA &amp; assurance-vie</p>
+      <p class="index-desc">Compte-titres, PEA, PEA-PME, assurance-vie, PER et PEAC : plafond, univers d'investissement, durée de détention et fiscalité en un coup d'œil.</p>
+      <div class="index-tags">
+        <span>Page de référence</span>
+        <span>PEA &amp; PEA-PME</span>
+        <span>PEAC jeunes</span>
+      </div>
+      <span class="index-cta">Ouvrir le dossier <span class="arrow">→</span></span>
+    </a>
+
+  </div>
+
+</main>
+
+<footer>
+  Outils d'aide à la préparation de dossier, à destination des conseillers bancaires et courtiers. Ils ne constituent ni un conseil financier, ni un conseil fiscal. Les résultats affichés sont indicatifs.
+</footer>
+
+</body>
+</html>

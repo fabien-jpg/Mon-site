@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la \"C:\\\\Users\\\\Fabien\\\\Documents\\\\cowork\\\\Creditelio\" 2>&1 || echo \"NOT FOUND\")"
+    ]
+  }
+}

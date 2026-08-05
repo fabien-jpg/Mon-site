@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Espace client — F. Lombardo Photographie</title>
+<meta name="description" content="Espace client F. Lombardo Photographie : retrouvez vos galeries privées et téléchargez vos photos en haute définition.">
+<meta name="robots" content="noindex, follow">
+<meta name="author" content="F. Lombardo Photographie">
+<link rel="canonical" href="https://www.lombardo.fr/espace-client.html">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400;1,6..96,500&family=Work+Sans:wght@300;400;500;600&family=Special+Elite&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+<style>
+  /* ---- Header opaque sur cette page (fond identique à l'index) ---- */
+  #siteHeader{
+    background:rgba(241,232,216,0.94);
+    backdrop-filter:blur(6px);
+    border-bottom-color:var(--line);
+  }
+
+  /* ---- Espace client (page dédiée) ---- */
+  .client-hero{
+    background:var(--bordeaux-deep); color:var(--parchment); text-align:center;
+    padding:clamp(9rem,16vw,11rem) clamp(1.5rem,4vw,3.5rem) clamp(4rem,8vw,5.5rem);
+  }
+  .client-hero .idx-label{ font-family:'Special Elite',monospace; font-size:0.72rem; letter-spacing:0.12em; color:var(--brass); text-transform:uppercase; }
+  .client-hero h1{ font-size:clamp(2rem,4.4vw,3.2rem); margin:0.6rem 0 0.9rem; }
+  .client-hero p{ max-width:42ch; margin:0 auto; opacity:0.8; line-height:1.65; font-size:0.98rem; }
+
+  .client-gallery{
+    padding:clamp(3.5rem,8vw,5.5rem) clamp(1.5rem,4vw,3.5rem);
+    max-width:1040px; margin:0 auto;
+  }
+  .client-gallery-frame{
+    background:#fbf6ea;
+    border:1px solid var(--line);
+    box-shadow:0 18px 34px rgba(42,33,27,0.12);
+    padding:clamp(1.2rem,3vw,2.4rem);
+    min-height:220px;
+  }
+  #jingooGallery{ width:100%; }
+
+  .client-help{
+    text-align:center; margin-top:2.2rem;
+    font-size:0.9rem; color:rgba(42,33,27,0.65); line-height:1.65;
+  }
+  .client-help a{ border-bottom:1px solid var(--bordeaux); color:var(--bordeaux); }
+
+  .back{
+    display:block; width:fit-content; margin:3rem auto 0;
+    font-family:'Special Elite',monospace; font-size:0.78rem;
+    letter-spacing:0.06em; color:var(--bordeaux);
+    text-decoration:none;
+  }
+  .back:hover{ text-decoration:underline; }
+</style>
+</head>
+<body class="no-intro">
+
+<header id="siteHeader" class="reveal">
+  <a href="index.html#top" class="brand">
+    <img src="img/nom-logo.png" alt="F. Lombardo Photographie">
+    <span>F. Lombardo</span>
+  </a>
+  <button class="nav-toggle" id="navToggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="siteNav">
+    <span></span><span></span><span></span>
+  </button>
+  <nav id="siteNav">
+    <ul>
+      <li><a href="index.html#portfolio">Portfolio</a></li>
+      <li><a href="index.html#bio">Biographie</a></li>
+      <li><a href="espace-client.html">Espace client</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="top">
+
+  <section class="client-hero">
+    <div class="idx-label">Correspondance privée</div>
+    <h1>Espace client</h1>
+    <p>Vos galeries privées et vos photos en haute définition, comme une lettre cachetée à votre nom.</p>
+  </section>
+
+  <section class="client-gallery">
+    <div class="client-gallery-frame">
+      <div id="jingooGallery"></div>
+    </div>
+    <p class="client-help">Vous avez reçu un code d'accès par e-mail ? Saisissez-le ci-dessus pour retrouver votre galerie. En cas de souci, <a href="mailto:fabien@lombardo.fr">écrivez-moi</a>.</p>
+    <a href="index.html" class="back">← Retour au site</a>
+  </section>
+
+</main>
+
+<footer>
+  <span>© <span id="year"></span> F. Lombardo Photographie — Photographe mariage &amp; naissance, Pyrénées-Orientales (66) — SIRET 811 244 532 00024</span>
+  <div class="links">
+    <a href="https://www.instagram.com/flombardo_photo/" target="_blank" rel="noopener">Instagram</a>
+    <a href="espace-client.html">Espace client</a>
+    <a href="mailto:fabien@lombardo.fr">Email</a>
+    <a href="mentions-legales.html">Mentions légales</a>
+  </div>
+</footer>
+
+<script type="text/javascript">(function(i,s,o,g,r,a,m){i['JingooGalleryObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script',"https://www.jingoo.com/api/accesDistant/VzsDZQBSUWINagN3VDxSMwh9UzcGJVc8AW0AaloxCm5TYAExAjYGallkBiAGYFM2UiFcMAU5VjsBNQc8XG8OIFcmA1MAZ1F6DWoDcVQn.js",'JingooGalleryLoader');</script>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  var navToggle = document.getElementById('navToggle');
+  var siteNav = document.getElementById('siteNav');
+  var header = document.getElementById('siteHeader');
+
+  function closeMenu(){
+    siteNav.classList.remove('open');
+    navToggle.classList.remove('open');
+    navToggle.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+  function toggleMenu(){
+    var isOpen = siteNav.classList.toggle('open');
+    navToggle.classList.toggle('open', isOpen);
+    navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  }
+  navToggle.addEventListener('click', toggleMenu);
+  siteNav.querySelectorAll('a').forEach(function(link){
+    link.addEventListener('click', closeMenu);
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && siteNav.classList.contains('open')) closeMenu();
+  });
+
+  window.addEventListener('scroll', function(){
+    if (window.scrollY > 40) header.classList.add('scrolled');
+    else header.classList.remove('scrolled');
+  });
+</script>
+
+</body>
+</html>

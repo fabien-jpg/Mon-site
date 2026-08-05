@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulateur d'épargne — Facilpro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* =========================================================
+   Styles spécifiques au module « Épargne ».
+   Complètent style.css (mêmes variables, mêmes composants).
+   ========================================================= */
+
+/* Sélecteur souligné, même traitement que les champs texte */
+.field select{
+  width:100%;
+  padding:5px 12px 7px 0;
+  border:none;
+  border-bottom:1.5px solid var(--border);
+  border-radius:0;
+  background:transparent;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:15px;
+  color:var(--ink);
+  cursor:pointer;
+  transition:border-color .15s ease;
+}
+.field select:focus{outline:none;border-bottom-color:var(--brass);}
+
+/* Champs conditionnels selon le régime fiscal choisi */
+.regime-fields{display:none;margin-top:18px;}
+.regime-fields.open{display:grid;}
+
+/* Détail du calcul fiscal */
+.detail-fiscal{
+  margin-top:18px;
+  padding:16px 18px;
+  background:var(--surface-alt);
+  border-radius:3px;
+}
+.detail-fiscal .ligne{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:6px 0;
+  border-bottom:1px solid var(--border);
+  font-size:13px;
+}
+.detail-fiscal .ligne:last-child{border-bottom:0;}
+.detail-fiscal .ligne .lib{color:var(--muted);}
+.detail-fiscal .ligne .val{
+  font-family:'IBM Plex Mono',monospace;
+  font-weight:600;
+  color:var(--ink);
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <p class="eyebrow">Simulateur — épargne</p>
+  <h1>Combien rapportera cette épargne, net d'impôt ?</h1>
+  <p>Versement initial, versements périodiques, taux de rémunération et régime fiscal : visualisez le capital constitué, les intérêts bruts et ce qu'il en reste une fois la fiscalité appliquée. Pour une épargne dédiée à la retraite avec déduction fiscale à l'entrée, voir le <a href="per.html" style="color:var(--brass-deep);">module PER dédié</a>.</p>
+</header>
+
+<main>
+
+  <nav class="quick-nav">
+    <a href="index.html" class="quick-nav-home">← Accueil</a>
+  </nav>
+
+  <div class="block-frame">
+  <section class="card" id="epargne-section">
+    <div class="card-head">
+      <h2>Simulateur d'épargne</h2>
+      <span class="tag">Capitalisation &amp; fiscalité</span>
+    </div>
+
+    <div class="grid">
+      <div class="field">
+        <label for="ep-versementInitial">Versement initial</label>
+        <div class="input-wrap"><input type="text" id="ep-versementInitial" inputmode="decimal" value="1 000"><span class="unit">€</span></div>
+      </div>
+      <div class="field">
+        <label for="ep-taux">Taux de rémunération annuel</label>
+        <div class="input-wrap"><input type="text" id="ep-taux" inputmode="decimal" value="3"><span class="unit">%</span></div>
+      </div>
+      <div class="field">
+        <label for="ep-duree">Durée de placement</label>
+        <div class="input-wrap"><input type="text" id="ep-duree" inputmode="decimal" value="10"><span class="unit">ans</span></div>
+      </div>
+      <div class="field">
+        <label for="ep-frequence">Fréquence des versements</label>
+        <div class="input-wrap">
+          <select id="ep-frequence">
+            <option value="12">Mensuelle</option>
+            <option value="4">Trimestrielle</option>
+            <option value="2">Semestrielle</option>
+            <option value="1">Annuelle</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="ep-versementPeriodique">Montant du versement périodique</label>
+        <div class="input-wrap"><input type="text" id="ep-versementPeriodique" inputmode="decimal" value="100"><span class="unit">€</span></div>
+      </div>
+      <div class="field">
+        <label for="ep-regime">Régime fiscal</label>
+        <div class="input-wrap">
+          <select id="ep-regime">
+            <option value="reglemente">Livret réglementé (Livret A, LDDS, LEP) — exonéré</option>
+            <option value="livretPfu" selected>Livret / compte bancaire fiscalisé — Flat tax (PFU)</option>
+            <option value="livretBareme">Livret / compte bancaire fiscalisé — Barème progressif</option>
+            <option value="avMoins8">Assurance-vie — contrat de moins de 8 ans</option>
+            <option value="avPlus8">Assurance-vie — contrat de 8 ans ou plus</option>
+            <option value="pea">PEA</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid regime-fields" id="champBareme">
+      <div class="field">
+        <label for="ep-tmi">Tranche marginale d'imposition (TMI)</label>
+        <div class="input-wrap">
+          <select id="ep-tmi">
+            <option value="0">0 %</option>
+            <option value="11">11 %</option>
+            <option value="30" selected>30 %</option>
+            <option value="41">41 %</option>
+            <option value="45">45 %</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid regime-fields" id="champAvPlus8">
+      <div class="field">
+        <label for="ep-autresPrimes">Autres primes versées sur vos contrats d'assurance-vie
+          <span style="display:block;font-weight:400;font-size:11.5px;color:var(--muted);margin-top:4px;">Tous contrats confondus, hors celui-ci — sert à déterminer le seuil de 150 000 €</span>
+        </label>
+        <div class="input-wrap"><input type="text" id="ep-autresPrimes" inputmode="decimal" value="0"><span class="unit">€</span></div>
+      </div>
+    </div>
+    <label class="checkbox-row regime-fields" id="champCoupleAv" style="display:none;">
+      <input type="checkbox" id="ep-coupleAv"> Contrat détenu en couple, imposition commune (abattement 9 200 € au lieu de 4 600 €)
+    </label>
+
+    <label class="checkbox-row regime-fields" id="champPeaAnticipe" style="display:none;">
+      <input type="checkbox" id="ep-peaAnticipe"> Retrait avant 5 ans (clôture anticipée du plan)
+    </label>
+
+    <div class="button-row">
+      <button class="calc-btn" id="epCalculerBtn">Calculer</button>
+      <button class="calc-btn secondary" id="epReinitialiserBtn">Réinitialiser</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="result-hero">
+      <div class="big" id="epCapitalNet">0 € <span>net d'impôt</span></div>
+      <div class="sub-stats">
+        <div class="stat">
+          <span class="label">total versé</span>
+          <span class="value" id="epTotalVerse">0 €</span>
+        </div>
+        <div class="stat">
+          <span class="label">intérêts bruts</span>
+          <span class="value" id="epInteretsBruts">0 €</span>
+        </div>
+        <div class="stat">
+          <span class="label">impôt total</span>
+          <span class="value" id="epImpotTotal">0 €</span>
+        </div>
+        <div class="stat">
+          <span class="label">rendement net</span>
+          <span class="value" id="epRendementNet">0 %</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight-box" id="epInsightBox">
+      <p class="insight-label">Lecture pour le conseiller</p>
+      <p id="epInsightText"></p>
+      <div class="detail-fiscal" id="epDetailFiscal"></div>
+    </div>
+
+    <button class="toggle" id="epToggleTable">Afficher le tableau annuel</button>
+    <div class="table-wrap" id="epTableWrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Année</th>
+            <th>Versements cumulés</th>
+            <th>Intérêts de l'année</th>
+            <th>Capital brut fin d'année</th>
+          </tr>
+        </thead>
+        <tbody id="epAmortBody"></tbody>
+      </table>
+    </div>
+
+  </section>
+  </div>
+
+</main>
+
+<footer>
+  Outil d'aide à la préparation de dossier, pas un conseil fiscal ni financier. Les intérêts sont capitalisés mensuellement à taux constant sur toute la durée : les taux réels des produits réglementés varient dans le temps et sont fixés par arrêté. La fiscalité de l'assurance-vie au-delà de 150 000 € de primes et le choix entre flat tax et barème progressif dépendent de la situation fiscale globale du foyer — à affiner avec un conseil compétent. Chiffres en vigueur au 1<sup>er</sup> août 2026 (prélèvements sociaux 18,6 %, sauf assurance-vie, PEL/CEL et PEP restés à 17,2 %, loi de financement de la sécurité sociale pour 2026).
+</footer>
+
+<script>
+/* ===================== utilitaires ===================== */
+function formatEuro(n){
+  if(!isFinite(n)) n = 0;
+  return n.toLocaleString('fr-FR',{maximumFractionDigits:0}) + ' €';
+}
+function formatEuro2(n){
+  if(!isFinite(n)) n = 0;
+  return n.toLocaleString('fr-FR',{maximumFractionDigits:2}) + ' €';
+}
+function formatPct(n){
+  if(!isFinite(n)) n = 0;
+  return n.toLocaleString('fr-FR',{maximumFractionDigits:2}) + ' %';
+}
+// Lecture d'un champ numérique en texte libre (espaces, virgule ou point)
+function lireNombre(id){
+  const raw = document.getElementById(id).value;
+  const normalized = String(raw).replace(/\s/g,'').replace(',', '.');
+  const parsed = parseFloat(normalized);
+  return isNaN(parsed) ? 0 : parsed;
+}
+
+/* ===================== affichage conditionnel selon le régime ===================== */
+const elRegime = document.getElementById('ep-regime');
+function majChampsRegime(){
+  const regime = elRegime.value;
+  document.getElementById('champBareme').classList.toggle('open', regime === 'livretBareme');
+  document.getElementById('champAvPlus8').classList.toggle('open', regime === 'avPlus8');
+  const coupleAv = document.getElementById('champCoupleAv');
+  coupleAv.style.display = (regime === 'avPlus8') ? 'flex' : 'none';
+  const peaField = document.getElementById('champPeaAnticipe');
+  peaField.style.display = (regime === 'pea') ? 'flex' : 'none';
+}
+elRegime.addEventListener('change', majChampsRegime);
+
+/* ===================== moteur de capitalisation ===================== */
+// Simule mois par mois : intérêts capitalisés chaque mois au taux annuel/12,
+// versement périodique ajouté aux mois correspondant à la fréquence choisie.
+function simulerCapitalisation(versementInitial, tauxAnnuel, dureeAns, frequenceParAn, versementPeriodique){
+  const moisTotal = Math.max(1, Math.round(dureeAns * 12));
+  const freqMois = Math.max(1, Math.round(12 / frequenceParAn));
+  const tauxMensuel = (tauxAnnuel / 100) / 12;
+
+  let capital = versementInitial;
+  let versementsCumules = versementInitial;
+  const historiqueAnnuel = []; // {annee, versementsCumules, interetsAnnee, capitalFin}
+  let interetsAnneeCourante = 0;
+
+  for (let mois = 1; mois <= moisTotal; mois++){
+    const interetMois = capital * tauxMensuel;
+    capital += interetMois;
+    interetsAnneeCourante += interetMois;
+
+    if (mois % freqMois === 0){
+      capital += versementPeriodique;
+      versementsCumules += versementPeriodique;
+    }
+
+    if (mois % 12 === 0){
+      historiqueAnnuel.push({
+        annee: mois / 12,
+        versementsCumules,
+        interetsAnnee: interetsAnneeCourante,
+        capitalFin: capital
+      });
+      interetsAnneeCourante = 0;
+    }
+  }
+  // Reliquat si la durée n'est pas un multiple entier d'années
+  if (moisTotal % 12 !== 0){
+    historiqueAnnuel.push({
+      annee: moisTotal / 12,
+      versementsCumules,
+      interetsAnnee: interetsAnneeCourante,
+      capitalFin: capital
+    });
+  }
+
+  const interetsBruts = capital - versementsCumules;
+  return { capitalBrut: capital, versementsCumules, interetsBruts, historiqueAnnuel };
+}
+
+/* ===================== application du régime fiscal ===================== */
+// Renvoie { impot, detail: [{libelle, montant}], noteRegime }
+function appliquerFiscalite(interetsBruts, regime, params){
+  const PS_STANDARD = 18.6; // prélèvements sociaux depuis le 1er janvier 2026 (LFSS 2026)
+  const PS_REDUIT = 17.2;   // maintenus pour assurance-vie, PEL/CEL, PEP
+
+  if (interetsBruts <= 0){
+    return { impot: 0, detail: [], noteRegime: '' };
+  }
+
+  if (regime === 'reglemente'){
+    return {
+      impot: 0,
+      detail: [{ libelle: 'Intérêts exonérés (livret réglementé)', montant: 0 }],
+      noteRegime: `Les livrets réglementés (Livret A, LDDS, LEP) sont exonérés d'impôt sur le revenu et de prélèvements sociaux — aucune fiscalité ne s'applique aux intérêts.`
+    };
+  }
+
+  if (regime === 'livretPfu'){
+    const ir = interetsBruts * 0.128;
+    const ps = interetsBruts * (PS_STANDARD / 100);
+    return {
+      impot: ir + ps,
+      detail: [
+        { libelle: 'Impôt sur le revenu (12,8 %)', montant: ir },
+        { libelle: `Prélèvements sociaux (${PS_STANDARD} %)`, montant: ps }
+      ],
+      noteRegime: `Flat tax (PFU) à 31,4 % depuis le 1ᵉʳ janvier 2026 (12,8 % d'impôt sur le revenu + 18,6 % de prélèvements sociaux, loi de financement de la sécurité sociale pour 2026). L'option pour le barème progressif reste possible si elle est plus favorable.`
+    };
+  }
+
+  if (regime === 'livretBareme'){
+    const ir = interetsBruts * (params.tmi / 100);
+    const ps = interetsBruts * (PS_STANDARD / 100);
+    return {
+      impot: ir + ps,
+      detail: [
+        { libelle: `Impôt sur le revenu (TMI ${params.tmi} %)`, montant: ir },
+        { libelle: `Prélèvements sociaux (${PS_STANDARD} %)`, montant: ps }
+      ],
+      noteRegime: `Option pour le barème progressif : les intérêts s'ajoutent au revenu imposable et sont taxés à la tranche marginale, plus ${PS_STANDARD} % de prélèvements sociaux (dus dans tous les cas). Cette option est globale et vaut pour l'ensemble des revenus du capital de l'année — n'est avantageuse en général que pour une TMI inférieure à 12,8 %.`
+    };
+  }
+
+  if (regime === 'avMoins8'){
+    const ir = interetsBruts * 0.128;
+    const ps = interetsBruts * (PS_REDUIT / 100);
+    return {
+      impot: ir + ps,
+      detail: [
+        { libelle: 'Impôt sur le revenu (12,8 %)', montant: ir },
+        { libelle: `Prélèvements sociaux (${PS_REDUIT} %)`, montant: ps }
+      ],
+      noteRegime: `Avant 8 ans, les gains rachetés sur un contrat d'assurance-vie suivent le PFU à 30 % (12,8 % + ${PS_REDUIT} % — l'assurance-vie n'est pas concernée par la hausse des prélèvements sociaux de 2026). L'option pour le barème progressif reste possible.`
+    };
+  }
+
+  if (regime === 'avPlus8'){
+    const abattement = params.couple ? 9200 : 4600;
+    const gainsApresAbattement = Math.max(0, interetsBruts - abattement);
+    const abattementApplique = interetsBruts - gainsApresAbattement;
+
+    const primesCeContrat = params.primesCeContrat;
+    const autresPrimes = params.autresPrimes;
+    const seuil = 150000;
+    const placeDisponibleSousSeuil = Math.max(0, seuil - autresPrimes);
+    const fractionSousSeuil = primesCeContrat > 0 ? Math.min(1, placeDisponibleSousSeuil / primesCeContrat) : 1;
+
+    const gainsSousSeuil = gainsApresAbattement * fractionSousSeuil;
+    const gainsAuDela = gainsApresAbattement - gainsSousSeuil;
+
+    const irSousSeuil = gainsSousSeuil * 0.075;
+    const irAuDela = gainsAuDela * 0.128;
+    const ps = gainsApresAbattement * (PS_REDUIT / 100);
+
+    const detail = [
+      { libelle: `Abattement annuel (${params.couple ? 'couple' : 'personne seule'})`, montant: -abattementApplique }
+    ];
+    if (gainsSousSeuil > 0) detail.push({ libelle: 'IR sur gains ≤ 150 000 € de primes (7,5 %)', montant: irSousSeuil });
+    if (gainsAuDela > 0) detail.push({ libelle: 'IR sur gains > 150 000 € de primes (12,8 %)', montant: irAuDela });
+    detail.push({ libelle: `Prélèvements sociaux (${PS_REDUIT} %)`, montant: ps });
+
+    return {
+      impot: irSousSeuil + irAuDela + ps,
+      detail,
+      noteRegime: `Après 8 ans, un abattement annuel de ${formatEuro(abattement)} s'applique sur les gains rachetés (${params.couple ? '9 200 € pour une imposition commune' : '4 600 € pour une personne seule'}). Au-delà, le taux est de 7,5 % d'IR (+ ${PS_REDUIT} % de PS, soit 24,7 %) tant que le total des primes versées, tous contrats confondus, ne dépasse pas 150 000 € ; la part excédentaire suit le PFU classique à 30 % (12,8 % + ${PS_REDUIT} %).`
+    };
+  }
+
+  if (regime === 'pea'){
+    if (params.retraitAnticipe){
+      const ir = interetsBruts * 0.128;
+      const ps = interetsBruts * (PS_STANDARD / 100);
+      return {
+        impot: ir + ps,
+        detail: [
+          { libelle: 'Impôt sur le revenu (12,8 %)', montant: ir },
+          { libelle: `Prélèvements sociaux (${PS_STANDARD} %)`, montant: ps }
+        ],
+        noteRegime: `Un retrait avant 5 ans entraîne la clôture du PEA et l'imposition des gains au PFU de 31,4 % (12,8 % + ${PS_STANDARD} %), comme un compte-titres ordinaire.`
+      };
+    }
+    const ps = interetsBruts * (PS_STANDARD / 100);
+    return {
+      impot: ps,
+      detail: [
+        { libelle: 'Impôt sur le revenu', montant: 0 },
+        { libelle: `Prélèvements sociaux (${PS_STANDARD} %)`, montant: ps }
+      ],
+      noteRegime: `Après 5 ans, les gains du PEA sont exonérés d'impôt sur le revenu ; seuls les ${PS_STANDARD} % de prélèvements sociaux restent dus (taux applicable au retrait, y compris sur les gains antérieurs à 2026).`
+    };
+  }
+
+  return { impot: 0, detail: [], noteRegime: '' };
+}
+
+/* ===================== calcul principal ===================== */
+function calculerEpargne(){
+  const versementInitial = lireNombre('ep-versementInitial');
+  const taux = lireNombre('ep-taux');
+  const duree = lireNombre('ep-duree');
+  const frequence = parseInt(document.getElementById('ep-frequence').value, 10);
+  const versementPeriodique = lireNombre('ep-versementPeriodique');
+  const regime = elRegime.value;
+
+  const sim = simulerCapitalisation(versementInitial, taux, duree, frequence, versementPeriodique);
+
+  const params = {
+    tmi: lireNombre('ep-tmi'),
+    couple: document.getElementById('ep-coupleAv').checked,
+    autresPrimes: lireNombre('ep-autresPrimes'),
+    primesCeContrat: sim.versementsCumules,
+    retraitAnticipe: document.getElementById('ep-peaAnticipe').checked
+  };
+
+  const fiscal = appliquerFiscalite(sim.interetsBruts, regime, params);
+  const capitalNet = sim.capitalBrut - fiscal.impot;
+  const rendementNet = sim.versementsCumules > 0 ? (capitalNet - sim.versementsCumules) / sim.versementsCumules * 100 : 0;
+
+  document.getElementById('epCapitalNet').innerHTML = formatEuro(capitalNet) + ' <span>net d\'impôt</span>';
+  document.getElementById('epTotalVerse').textContent = formatEuro(sim.versementsCumules);
+  document.getElementById('epInteretsBruts').textContent = formatEuro(sim.interetsBruts);
+  document.getElementById('epImpotTotal').textContent = formatEuro(fiscal.impot);
+  document.getElementById('epRendementNet').textContent = formatPct(rendementNet);
+
+  document.getElementById('epInsightText').textContent = fiscal.noteRegime;
+  const detailEl = document.getElementById('epDetailFiscal');
+  detailEl.innerHTML = fiscal.detail.map(l => `
+    <div class="ligne"><span class="lib">${l.libelle}</span><span class="val">${(l.montant < 0 ? '− ' : '') + formatEuro2(Math.abs(l.montant))}</span></div>
+  `).join('');
+  document.getElementById('epInsightBox').classList.add('show');
+
+  const body = document.getElementById('epAmortBody');
+  body.innerHTML = sim.historiqueAnnuel.map(h => `
+    <tr>
+      <td>${Number.isInteger(h.annee) ? h.annee : h.annee.toFixed(1)}</td>
+      <td>${formatEuro2(h.versementsCumules)}</td>
+      <td>${formatEuro2(h.interetsAnnee)}</td>
+      <td>${formatEuro2(h.capitalFin)}</td>
+    </tr>
+  `).join('');
+}
+document.getElementById('epCalculerBtn').addEventListener('click', calculerEpargne);
+
+document.getElementById('epToggleTable').addEventListener('click', function(){
+  const wrap = document.getElementById('epTableWrap');
+  const open = wrap.classList.toggle('open');
+  this.textContent = open ? "Masquer le tableau annuel" : "Afficher le tableau annuel";
+});
+
+/* ===================== réinitialisation ===================== */
+function reinitialiserEpargne(){
+  document.getElementById('ep-versementInitial').value = '1 000';
+  document.getElementById('ep-taux').value = '3';
+  document.getElementById('ep-duree').value = '10';
+  document.getElementById('ep-frequence').value = '12';
+  document.getElementById('ep-versementPeriodique').value = '100';
+  elRegime.value = 'livretPfu';
+  document.getElementById('ep-tmi').value = '30';
+  document.getElementById('ep-coupleAv').checked = false;
+  document.getElementById('ep-autresPrimes').value = '0';
+  document.getElementById('ep-peaAnticipe').checked = false;
+  majChampsRegime();
+
+  document.getElementById('epCapitalNet').innerHTML = '0 € <span>net d\'impôt</span>';
+  document.getElementById('epTotalVerse').textContent = '0 €';
+  document.getElementById('epInteretsBruts').textContent = '0 €';
+  document.getElementById('epImpotTotal').textContent = '0 €';
+  document.getElementById('epRendementNet').textContent = '0 %';
+  document.getElementById('epInsightBox').classList.remove('show');
+  document.getElementById('epAmortBody').innerHTML = '';
+
+  const tableWrap = document.getElementById('epTableWrap');
+  tableWrap.classList.remove('open');
+  document.getElementById('epToggleTable').textContent = "Afficher le tableau annuel";
+}
+document.getElementById('epReinitialiserBtn').addEventListener('click', reinitialiserEpargne);
+
+/* état initial des champs conditionnels */
+majChampsRegime();
+</script>
+
+<button id="backToTop" class="back-to-top" aria-label="Revenir en haut de la page" title="Revenir en haut">↑</button>
+<script>
+(function(){
+  var btn = document.getElementById('backToTop');
+  if(!btn) return;
+  window.addEventListener('scroll', function(){
+    if(window.scrollY > 400){ btn.classList.add('show'); } else { btn.classList.remove('show'); }
+  });
+  btn.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+})();
+</script>
+</body>
+</html>

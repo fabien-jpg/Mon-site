@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulateur de rentabilité locative — Facilpro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* =========================================================
+   Styles spécifiques au module « Rentabilité locative ».
+   Complètent style.css (mêmes variables, mêmes tokens).
+   Ce module a son propre écran d'accueil (choix du dossier)
+   et une mise en page à deux colonnes (formulaire clair /
+   résultat sombre), reprises du fichier de référence fourni.
+   ========================================================= */
+
+body{padding-bottom:0;}
+
+.page-nav-wrap{
+  max-width:960px;
+  margin:0 auto;
+  padding:0 24px;
+}
+
+/* ---------- Écran d'accueil du module ---------- */
+.rl-home{
+  max-width:960px;
+  margin:0 auto;
+  padding:40px 24px 64px;
+}
+
+.rl-dossiers{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:24px;
+}
+.rl-dossier{
+  text-align:left;
+  cursor:pointer;
+  border-radius:4px;
+  padding:30px 28px;
+  position:relative;
+  transition:transform .3s cubic-bezier(.2,.7,.3,1), box-shadow .3s ease, border-color .3s ease;
+}
+.rl-dossier:hover{
+  transform:translateY(-4px);
+  box-shadow:0 18px 40px -18px rgba(22,35,43,.35);
+}
+.rl-dossier-light{
+  background:var(--surface);
+  border:1px solid var(--border);
+}
+.rl-dossier-light:hover{border-color:var(--brass);}
+.rl-dossier-dark{
+  background:var(--ink);
+  border:1px solid var(--ink);
+}
+.rl-dossier-dark:hover{border-color:var(--brass);}
+.rl-dossier-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+}
+.rl-dossier-tag{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.08em;
+}
+.rl-dossier-light .rl-dossier-tag{color:var(--brass-deep);}
+.rl-dossier-dark .rl-dossier-tag{color:var(--brass-light);}
+.rl-dossier h2{
+  font-family:'Fraunces',serif;
+  font-size:24px;
+  font-weight:600;
+  margin:16px 0 8px;
+}
+.rl-dossier-light h2{color:var(--ink);}
+.rl-dossier-dark h2{color:var(--surface);}
+.rl-dossier p{
+  font-size:13.5px;
+  line-height:1.55;
+  margin:0;
+}
+.rl-dossier-light p{color:var(--muted);}
+.rl-dossier-dark p{color:rgba(247,242,230,.68);}
+.rl-dossier-cta{
+  margin-top:20px;
+  font-size:12.5px;
+  font-weight:600;
+}
+.rl-dossier-light .rl-dossier-cta{color:var(--forest);}
+.rl-dossier-dark .rl-dossier-cta{color:var(--brass-light);}
+
+.rl-home-foot{
+  text-align:center;
+  font-size:11.5px;
+  color:var(--muted);
+  margin-top:40px;
+}
+
+/* ---------- En-tête d'outil (retour + titre) ---------- */
+.rl-tool-header{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:20px 24px;
+  border-bottom:1px solid var(--border);
+  background:var(--surface);
+  max-width:100%;
+}
+.rl-back-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:transparent;
+  border:1px solid var(--border);
+  border-radius:3px;
+  padding:7px 12px;
+  cursor:pointer;
+  font-family:'Inter',sans-serif;
+  font-size:12.5px;
+  color:var(--ink);
+  transition:border-color .15s ease, background .15s ease;
+}
+.rl-back-btn:hover{border-color:var(--ink); background:var(--surface-alt);}
+.rl-tool-header-divider{width:1px;height:20px;background:var(--border);}
+.rl-tool-header h2{
+  font-family:'Fraunces',serif;
+  font-size:18px;
+  font-weight:600;
+  margin:0;
+  color:var(--ink);
+}
+
+/* ---------- Mise en page à deux colonnes ---------- */
+.rl-layout{
+  max-width:960px;
+  margin:0 auto;
+  padding:32px 24px 64px;
+  display:grid;
+  grid-template-columns:1.3fr 1fr;
+  gap:28px;
+  align-items:start;
+}
+@media (max-width:860px){
+  .rl-layout{grid-template-columns:1fr;}
+}
+
+.rl-form{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:26px 26px 10px;
+}
+
+/* Section numérotée (01 Acquisition, 02 Location…) */
+.rl-section{margin-bottom:28px;}
+.rl-section-head{
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+  margin-bottom:16px;
+  border-bottom:1px solid var(--border);
+  padding-bottom:8px;
+}
+.rl-section-head .num{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  color:var(--brass-deep);
+  letter-spacing:.05em;
+}
+.rl-section-head h3{
+  font-family:'Fraunces',serif;
+  font-size:16.5px;
+  font-weight:600;
+  margin:0;
+  color:var(--ink);
+}
+.rl-section .grid{gap:18px 24px;}
+
+/* ---------- Panneau de résultat (encre, collant) ---------- */
+.rl-result{
+  background:var(--ink);
+  border-radius:4px;
+  padding:28px 26px;
+  position:sticky;
+  top:20px;
+}
+.rl-result-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.1em;
+  color:var(--brass-light);
+  margin-bottom:6px;
+}
+.rl-result-empty{
+  font-size:13px;
+  color:rgba(247,242,230,.62);
+  line-height:1.6;
+  margin-top:18px;
+}
+.rl-gauge-wrap{display:flex;justify-content:center;margin:6px 0 10px;}
+.rl-gauge-value{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:26px;
+  font-weight:600;
+  margin-top:-6px;
+  color:var(--surface);
+  text-align:center;
+}
+.rl-gauge-label{
+  font-size:11px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--muted);
+  text-align:center;
+  margin-top:2px;
+}
+.rl-stat-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  padding:9px 0;
+  border-bottom:1px solid var(--border-light);
+}
+.rl-stat-row .rl-stat-label{
+  font-size:13px;
+  color:rgba(247,242,230,.72);
+}
+.rl-stat-row .rl-stat-value{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:14.5px;
+  font-weight:500;
+  color:var(--surface);
+  font-variant-numeric:tabular-nums;
+}
+.rl-stat-row.strong .rl-stat-value{font-size:18px;font-weight:600;}
+.rl-stat-row.pos .rl-stat-value{color:#8FB89C;}
+.rl-stat-row.neg .rl-stat-value{color:#D89A87;}
+.rl-result-foot{
+  font-size:10.5px;
+  color:rgba(247,242,230,.5);
+  line-height:1.5;
+  margin-top:16px;
+}
+
+/* Bouton calculer pleine largeur */
+.rl-calc-btn{
+  width:100%;
+  background:var(--brass);
+  color:var(--surface);
+  border:none;
+  border-radius:3px;
+  padding:13px 0;
+  font-family:'Inter',sans-serif;
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:.04em;
+  cursor:pointer;
+  margin:6px 0 26px;
+  transition:background .2s ease, transform .1s ease;
+}
+.rl-calc-btn:hover{background:var(--brass-light);}
+.rl-calc-btn:active{transform:scale(.98);}
+
+/* Sélecteur régime fiscal : même traitement souligné que les champs texte */
+.rl-select{
+  width:100%;
+  border:none;
+  border-bottom:1.5px solid var(--border);
+  background:transparent;
+  padding:5px 0 7px;
+  font-family:'Inter',sans-serif;
+  font-size:14.5px;
+  font-weight:500;
+  color:var(--ink);
+  cursor:pointer;
+  transition:border-color .15s ease;
+}
+.rl-select:focus{outline:none;border-bottom-color:var(--brass);}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <p class="eyebrow">Simulateur — investissement locatif</p>
+  <h1>Combien rapportera vraiment ce bien loué ?</h1>
+  <p>Prix d'achat, loyer, charges, financement et régime fiscal : estimez la rentabilité brute et nette, le cash-flow mensuel et ce qu'il en reste après impôt. Deux niveaux d'analyse sont proposés ci-dessous, du calcul rapide à l'étude complète.</p>
+</header>
+
+<div class="page-nav-wrap">
+  <nav class="quick-nav">
+    <a href="index.html" class="quick-nav-home">← Accueil</a>
+  </nav>
+</div>
+
+<!-- ============ ÉCRAN D'ACCUEIL DU MODULE ============ -->
+<div id="view-home">
+  <div class="rl-home">
+    <div class="index-head" style="margin-bottom:22px;">
+      <h2>Dossiers disponibles</h2>
+      <span>2 simulateurs</span>
+    </div>
+
+    <div class="rl-dossiers">
+      <div class="rl-dossier rl-dossier-light" id="btnOpenSimple" role="button" tabindex="0">
+        <div class="rl-dossier-top">
+          <span class="rl-dossier-tag">DOSSIER 01</span>
+          <span style="color:var(--brass-deep);font-size:18px;">%</span>
+        </div>
+        <h2>Simulateur simple</h2>
+        <p>Prix, loyer, charges essentielles et crédit. Rentabilité brute, nette et cash-flow mensuel en quelques champs.</p>
+        <div class="rl-dossier-cta">Ouvrir le dossier →</div>
+      </div>
+
+      <div class="rl-dossier rl-dossier-dark" id="btnOpenAdvanced" role="button" tabindex="0">
+        <div class="rl-dossier-top">
+          <span class="rl-dossier-tag">DOSSIER 02</span>
+          <span style="color:var(--brass-light);font-size:16px;">⟋</span>
+        </div>
+        <h2>Simulateur avancé</h2>
+        <p>Financement détaillé, régime fiscal (micro-foncier, réel, LMNP), TMI et cash-flow net d'impôt.</p>
+        <div class="rl-dossier-cta">Ouvrir le dossier →</div>
+      </div>
+    </div>
+
+    <p class="rl-home-foot">Estimations indicatives — ne remplacent pas l'avis d'un professionnel (notaire, expert-comptable, conseiller en gestion de patrimoine).</p>
+  </div>
+</div>
+
+<!-- ============ SIMULATEUR SIMPLE ============ -->
+<div id="view-simple" style="display:none;">
+  <div class="rl-tool-header">
+    <button class="rl-back-btn" id="btnBackFromSimple">← Retour</button>
+    <div class="rl-tool-header-divider"></div>
+    <h2>Simulateur simple</h2>
+  </div>
+
+  <div class="rl-layout">
+    <div class="rl-form">
+
+      <div class="rl-section">
+        <div class="rl-section-head"><span class="num">01</span><h3>Acquisition</h3></div>
+        <div class="grid">
+          <div class="field"><label for="s-prix">Prix d'achat</label><div class="input-wrap"><input type="text" inputmode="decimal" id="s-prix" value="180 000"><span class="unit">€</span></div></div>
+          <div class="field"><label for="s-notaire">Frais de notaire</label><div class="input-wrap"><input type="text" inputmode="decimal" id="s-notaire" value="7,5"><span class="unit">%</span></div></div>
+          <div class="field"><label for="s-travaux">Travaux / rénovation</label><div class="input-wrap"><input type="text" inputmode="decimal" id="s-travaux" value="8 000"><span class="unit">€</span></div></div>
+        </div>
+      </div>
+
+      <div class="rl-section">
+        <div class="rl-section-head"><span class="num">02</span><h3>Location</h3></div>
+        <div class="grid">
+          <div class="field"><label for="s-loyer">Loyer mensuel (hors charges)</label><div class="input-wrap"><input type="text" inputmode="decimal" id="s-loyer" value="750"><span class="unit">€</span></div></div>
+          <div class="field"><label for="s-charges">Charges annuelles (copro, taxe foncière, assurance)</label><div class="input-wrap"><input type="text" inputmode="decimal" id="s-charges" value="1 800"><span class="unit">€</span></div></div>
+          <div class="field"><label for="s-vacance">Vacance locative estimée</label><div class="input-wrap"><input type="text" inputmode="decimal" id="s-vacance" value="5"><span class="unit">%</span></div></div>
+        </div>
+      </div>
+
+      <div class="rl-section">
+        <div class="rl-section-head"><span class="num">03</span><h3>Financement</h3></div>
+        <div class="grid">
+          <div class="field"><label for="s-apport">Apport personnel</label><div class="input-wrap"><input type="text" inputmode="decimal" id="s-apport" value="20 000"><span class="unit">€</span></div></div>
+          <div class="field"><label for="s-taux">Taux du crédit</label><div class="input-wrap"><input type="text" inputmode="decimal" id="s-taux" value="3,6"><span class="unit">%</span></div></div>
+          <div class="field"><label for="s-duree">Durée du crédit</label><div class="input-wrap"><input type="text" inputmode="decimal" id="s-duree" value="20"><span class="unit">ans</span></div></div>
+        </div>
+      </div>
+
+      <button class="rl-calc-btn" id="btnCalcSimple">Calculer</button>
+    </div>
+
+    <div class="rl-result">
+      <div class="rl-result-label">RÉSULTAT</div>
+      <div id="s-empty" class="rl-result-empty">Renseignez les champs puis cliquez sur « Calculer » pour afficher la rentabilité et le cash-flow.</div>
+      <div id="s-filled" style="display:none;">
+        <div class="rl-gauge-wrap" id="s-gauge"></div>
+        <div class="rl-stat-row"><span class="rl-stat-label">Coût total de l'opération</span><span class="rl-stat-value" id="s-coutTotal"></span></div>
+        <div class="rl-stat-row"><span class="rl-stat-label">Rentabilité brute</span><span class="rl-stat-value" id="s-rentaBrute"></span></div>
+        <div class="rl-stat-row"><span class="rl-stat-label">Loyer annuel effectif</span><span class="rl-stat-value" id="s-loyerEffectif"></span></div>
+        <div class="rl-stat-row"><span class="rl-stat-label">Emprunt</span><span class="rl-stat-value" id="s-emprunt"></span></div>
+        <div class="rl-stat-row"><span class="rl-stat-label">Mensualité de crédit</span><span class="rl-stat-value" id="s-mensualite"></span></div>
+        <div class="rl-stat-row strong" id="s-cashflowRow"><span class="rl-stat-label">Cash-flow mensuel</span><span class="rl-stat-value" id="s-cashflow"></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SIMULATEUR AVANCÉ ============ -->
+<div id="view-advanced" style="display:none;">
+  <div class="rl-tool-header">
+    <button class="rl-back-btn" id="btnBackFromAdvanced">← Retour</button>
+    <div class="rl-tool-header-divider"></div>
+    <h2>Simulateur avancé</h2>
+  </div>
+
+  <div class="rl-layout">
+    <div class="rl-form">
+
+      <div class="rl-section">
+        <div class="rl-section-head"><span class="num">01</span><h3>Acquisition</h3></div>
+        <div class="grid">
+          <div class="field"><label for="a-prix">Prix d'achat</label><div class="input-wrap"><input type="text" inputmode="decimal" id="a-prix" value="210 000"><span class="unit">€</span></div></div>
+          <div class="field"><label for="a-notaire">Frais de notaire</label><div class="input-wrap"><input type="text" inputmode="decimal" id="a-notaire" value="7,5"><span class="unit">%</span></div></div>
+          <div class="field"><label for="a-agence">Frais d'agence (achat)</label><div class="input-wrap"><input type="text" inputmode="decimal" id="a-agence" value="0"><span class="unit">%</span></div></div>
+          <div class="field"><label for="a-travaux">Travaux / rénovation</label><div class="input-wrap"><input type="text" inputmode="decimal" id="a-travaux" value="15 000"><span class="unit">€</span></div></div>
+        </div>
+      </div>
+
+      <div class="rl-section">
+        <div class="rl-section-head"><span class="num">02</span><h3>Location</h3></div>
+        <div class="grid">
+          <div class="field"><label for="a-loyer">Loyer mensuel (hors charges)</label><div class="input-wrap"><input type="text" inputmode="decimal" id="a-loyer" value="880"><span class="unit">€</span></div></div>
+          <div class="field"><label for="a-vacance">Vacance locative estimée</label><div class="input-wrap"><input type="text" inputmode="decimal" id="a-vacance" value="5"><span class="unit">%</span></div></div>
+        </div>
+      </div>
+
+      <div class="rl-section">
+        <div class="rl-section-head"><span class="num">03</span><h3>Charges propriétaire</h3></div>
+        <div class="grid">
+          <div class="field"><label for="a-taxeFonciere">Taxe foncière (annuelle)</label><div class="input-wrap"><input type="text" inputmode="decimal" id="a-taxeFonciere" value="1 100"><span class="unit">€</span></div></div>
+          <div class="field"><label for="a-chargesCopro">Charges de copropriété (annuelles)</label><div class="input-wrap"><input type="text" inputmode="decimal" id="a-chargesCopro" value="900"><span class="unit">€</span></div></div>
+          <div class="field"><label for="a-assurancePNO">Assurance PNO (annuelle)</label><div class="input-wrap"><input type="text" inputmode="decimal" id="a-assurancePNO" value="150"><span class="unit">€</span></div></div>
+          <div class="field"><label for="a-gestion">Frais de gestion locative</label><div class="input-wrap"><input type="text" inputmode="decimal" id="a-gestion" value="7"><span class="unit">%</span></div></div>
+          <div class="field"><label for="a-entretien">Provision entretien</label><div class="input-wrap"><input type="text" inputmode="decimal" id="a-entretien" value="3"><span class="unit">%</span></div></div>
+        </div>
+      </div>
+
+      <div class="rl-section">
+        <div class="rl-section-head"><span class="num">04</span><h3>Financement</h3></div>
+        <div class="grid">
+          <div class="field"><label for="a-apport">Apport personnel</label><div class="input-wrap"><input type="text" inputmode="decimal" id="a-apport" value="25 000"><span class="unit">€</span></div></div>
+          <div class="field"><label for="a-taux">Taux du crédit</label><div class="input-wrap"><input type="text" inputmode="decimal" id="a-taux" value="3,5"><span class="unit">%</span></div></div>
+          <div class="field"><label for="a-duree">Durée du crédit</label><div class="input-wrap"><input type="text" inputmode="decimal" id="a-duree" value="20"><span class="unit">ans</span></div></div>
+          <div class="field"><label for="a-assuranceEmprunt">Assurance emprunteur</label><div class="input-wrap"><input type="text" inputmode="decimal" id="a-assuranceEmprunt" value="0,34"><span class="unit">%/an</span></div></div>
+        </div>
+      </div>
+
+      <div class="rl-section">
+        <div class="rl-section-head"><span class="num">05</span><h3>Fiscalité</h3></div>
+        <div class="grid">
+          <div class="field">
+            <label for="a-regime">Régime fiscal</label>
+            <select id="a-regime" class="rl-select">
+              <option value="micro-foncier">Location nue — Micro-foncier</option>
+              <option value="reel-foncier">Location nue — Régime réel</option>
+              <option value="lmnp-micro">LMNP — Micro-BIC</option>
+              <option value="lmnp-reel">LMNP — Régime réel</option>
+            </select>
+          </div>
+          <div class="field"><label for="a-tmi">Tranche marginale d'imposition</label><div class="input-wrap"><input type="text" inputmode="decimal" id="a-tmi" value="30"><span class="unit">%</span></div></div>
+        </div>
+      </div>
+
+      <button class="rl-calc-btn" id="btnCalcAdvanced">Calculer</button>
+    </div>
+
+    <div class="rl-result">
+      <div class="rl-result-label">RÉSULTAT</div>
+      <div id="a-empty" class="rl-result-empty">Renseignez les champs puis cliquez sur « Calculer » pour afficher la rentabilité, la fiscalité et le cash-flow.</div>
+      <div id="a-filled" style="display:none;">
+        <div class="rl-gauge-wrap" id="a-gauge"></div>
+        <div class="rl-stat-row"><span class="rl-stat-label">Coût total de l'opération</span><span class="rl-stat-value" id="a-coutTotal"></span></div>
+        <div class="rl-stat-row"><span class="rl-stat-label">Rentabilité brute</span><span class="rl-stat-value" id="a-rentaBrute"></span></div>
+        <div class="rl-stat-row"><span class="rl-stat-label">Charges annuelles totales</span><span class="rl-stat-value" id="a-chargesTotal"></span></div>
+        <div class="rl-stat-row"><span class="rl-stat-label">Emprunt</span><span class="rl-stat-value" id="a-emprunt"></span></div>
+        <div class="rl-stat-row"><span class="rl-stat-label">Mensualité (crédit + assurance)</span><span class="rl-stat-value" id="a-mensualite"></span></div>
+        <div class="rl-stat-row"><span class="rl-stat-label">Revenu imposable estimé</span><span class="rl-stat-value" id="a-revenuImposable"></span></div>
+        <div class="rl-stat-row" id="a-impotRow"><span class="rl-stat-label">Impôt + prélèvements sociaux (an.)</span><span class="rl-stat-value" id="a-impot"></span></div>
+        <div class="rl-stat-row"><span class="rl-stat-label">Rentabilité nette-nette</span><span class="rl-stat-value" id="a-rentaNetteNette"></span></div>
+        <div class="rl-stat-row"><span class="rl-stat-label">Cash-flow mensuel avant impôt</span><span class="rl-stat-value" id="a-cashflowAvant"></span></div>
+        <div class="rl-stat-row strong" id="a-cashflowApresRow"><span class="rl-stat-label">Cash-flow mensuel après impôt</span><span class="rl-stat-value" id="a-cashflowApres"></span></div>
+        <p class="rl-result-foot">Estimation simplifiée (intérêts moyennés sur la durée du prêt, amortissement LMNP forfaitaire). Ne constitue pas un conseil fiscal.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===================== utilitaires ===================== */
+function fmtEUR(n){
+  return (isFinite(n) ? n : 0).toLocaleString('fr-FR', {maximumFractionDigits:0}) + ' €';
+}
+function fmtPct(n){
+  return (isFinite(n) ? n : 0).toLocaleString('fr-FR', {maximumFractionDigits:2}) + ' %';
+}
+// Lecture d'un champ numérique en texte libre (virgule ou point, espaces autorisées)
+function lireNombre(id){
+  const raw = document.getElementById(id).value;
+  const normalized = String(raw).replace(/\s/g,'').replace(',', '.');
+  const parsed = parseFloat(normalized);
+  return isNaN(parsed) ? 0 : parsed;
+}
+function loanPayment(capital, annualRate, years){
+  const n = years * 12;
+  if (n <= 0) return 0;
+  const i = annualRate / 100 / 12;
+  if (i === 0) return capital / n;
+  return (capital * i) / (1 - Math.pow(1 + i, -n));
+}
+
+/* ===================== jauge (SVG, cadran d'arpenteur) ===================== */
+function renderGauge(containerId, value, label){
+  const min = 0, max = 12;
+  const clamped = Math.max(min, Math.min(max, isFinite(value) ? value : 0));
+  const pct = (clamped - min) / (max - min);
+  const angle = -90 + pct * 180;
+
+  const zones = [
+    { to: 2,  color: '#9C4A34' },
+    { to: 5,  color: '#AE8A4E' },
+    { to: 8,  color: '#4A6B54' },
+    { to: 12, color: '#33513E' }
+  ];
+
+  function polarToXY(cx, cy, r, deg){
+    const rad = (deg - 90) * Math.PI / 180;
+    return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
+  }
+
+  let arcs = '';
+  let prev = min;
+  zones.forEach(z => {
+    const a1 = -90 + ((prev - min) / (max - min)) * 180;
+    const a2 = -90 + ((Math.min(z.to, max) - min) / (max - min)) * 180;
+    const [x1, y1] = polarToXY(60, 60, 46, a1);
+    const [x2, y2] = polarToXY(60, 60, 46, a2);
+    const large = (a2 - a1) > 180 ? 1 : 0;
+    arcs += `<path d="M ${x1} ${y1} A 46 46 0 ${large} 1 ${x2} ${y2}" stroke="${z.color}" stroke-width="7" fill="none" stroke-linecap="butt" opacity="0.9"/>`;
+    prev = z.to;
+  });
+
+  const needleX = 60 + 40 * Math.sin(angle * Math.PI / 180);
+  const needleY = 60 - 40 * Math.cos(angle * Math.PI / 180);
+
+  const svg = `
+    <svg width="150" height="92" viewBox="0 0 120 70">
+      ${arcs}
+      <line x1="60" y1="60" x2="${needleX}" y2="${needleY}" stroke="#16232B" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="60" cy="60" r="3.5" fill="#16232B"/>
+      <circle cx="60" cy="60" r="1.3" fill="#CBA96C"/>
+    </svg>`;
+
+  document.getElementById(containerId).innerHTML = `
+    <div style="text-align:center;">
+      ${svg}
+      <div class="rl-gauge-value">${fmtPct(value)}</div>
+      <div class="rl-gauge-label">${label}</div>
+    </div>`;
+}
+
+/* ===================== navigation entre écrans ===================== */
+function showView(id){
+  ['view-home','view-simple','view-advanced'].forEach(v => {
+    document.getElementById(v).style.display = (v === id) ? '' : 'none';
+  });
+  window.scrollTo(0, 0);
+}
+document.getElementById('btnOpenSimple').addEventListener('click', () => showView('view-simple'));
+document.getElementById('btnOpenAdvanced').addEventListener('click', () => showView('view-advanced'));
+document.getElementById('btnBackFromSimple').addEventListener('click', () => showView('view-home'));
+document.getElementById('btnBackFromAdvanced').addEventListener('click', () => showView('view-home'));
+// Accessibilité clavier sur les dossiers de l'accueil (rôle "button")
+['btnOpenSimple','btnOpenAdvanced'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', function(e){
+    if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); this.click(); }
+  });
+});
+
+/* ===================== simulateur simple ===================== */
+function calculerSimple(){
+  const prix = lireNombre('s-prix');
+  const notairePct = lireNombre('s-notaire');
+  const travaux = lireNombre('s-travaux');
+  const loyer = lireNombre('s-loyer');
+  const charges = lireNombre('s-charges');
+  const vacance = lireNombre('s-vacance');
+  const apport = lireNombre('s-apport');
+  const taux = lireNombre('s-taux');
+  const duree = lireNombre('s-duree');
+
+  const coutTotal = prix * (1 + notairePct / 100) + travaux;
+  const loyerAnnuelBrut = loyer * 12;
+  const loyerAnnuelEffectif = loyerAnnuelBrut * (1 - vacance / 100);
+  const rentabiliteBrute = coutTotal > 0 ? (loyerAnnuelBrut / coutTotal) * 100 : 0;
+  const rentabiliteNette = coutTotal > 0 ? ((loyerAnnuelEffectif - charges) / coutTotal) * 100 : 0;
+  const emprunt = Math.max(0, coutTotal - apport);
+  const mensualite = loanPayment(emprunt, taux, duree);
+  const cashflowMensuel = (loyerAnnuelEffectif - charges) / 12 - mensualite;
+
+  document.getElementById('s-empty').style.display = 'none';
+  document.getElementById('s-filled').style.display = '';
+
+  renderGauge('s-gauge', rentabiliteNette, 'Rentabilité nette');
+  document.getElementById('s-coutTotal').textContent = fmtEUR(coutTotal);
+  document.getElementById('s-rentaBrute').textContent = fmtPct(rentabiliteBrute);
+  document.getElementById('s-loyerEffectif').textContent = fmtEUR(loyerAnnuelEffectif);
+  document.getElementById('s-emprunt').textContent = fmtEUR(emprunt);
+  document.getElementById('s-mensualite').textContent = fmtEUR(mensualite);
+
+  const cfEl = document.getElementById('s-cashflow');
+  cfEl.textContent = (cashflowMensuel >= 0 ? '+' : '') + fmtEUR(cashflowMensuel);
+  const cfRow = document.getElementById('s-cashflowRow');
+  cfRow.classList.remove('pos','neg');
+  cfRow.classList.add(cashflowMensuel >= 0 ? 'pos' : 'neg');
+}
+document.getElementById('btnCalcSimple').addEventListener('click', calculerSimple);
+
+/* ===================== simulateur avancé ===================== */
+function calculerAvance(){
+  const prix = lireNombre('a-prix');
+  const notairePct = lireNombre('a-notaire');
+  const fraisAgencePct = lireNombre('a-agence');
+  const travaux = lireNombre('a-travaux');
+
+  const loyer = lireNombre('a-loyer');
+  const vacance = lireNombre('a-vacance');
+
+  const taxeFonciere = lireNombre('a-taxeFonciere');
+  const chargesCopro = lireNombre('a-chargesCopro');
+  const assurancePNO = lireNombre('a-assurancePNO');
+  const gestionPct = lireNombre('a-gestion');
+  const provisionEntretienPct = lireNombre('a-entretien');
+
+  const apport = lireNombre('a-apport');
+  const taux = lireNombre('a-taux');
+  const duree = lireNombre('a-duree');
+  const assuranceEmpruntPct = lireNombre('a-assuranceEmprunt');
+
+  const regime = document.getElementById('a-regime').value;
+  const tmi = lireNombre('a-tmi');
+
+  const coutTotal = prix * (1 + notairePct / 100 + fraisAgencePct / 100) + travaux;
+  const loyerAnnuelBrut = loyer * 12;
+  const loyerAnnuelEffectif = loyerAnnuelBrut * (1 - vacance / 100);
+
+  const fraisGestionAnnuel = loyerAnnuelEffectif * (gestionPct / 100);
+  const provisionEntretienAnnuelle = loyerAnnuelBrut * (provisionEntretienPct / 100);
+
+  const chargesCourantes = taxeFonciere + chargesCopro + assurancePNO + fraisGestionAnnuel + provisionEntretienAnnuelle;
+
+  const emprunt = Math.max(0, coutTotal - apport);
+  const mensualiteCredit = loanPayment(emprunt, taux, duree);
+  const assuranceEmpruntAnnuelle = emprunt * (assuranceEmpruntPct / 100);
+  const mensualiteTotale = mensualiteCredit + assuranceEmpruntAnnuelle / 12;
+
+  const totalInterets = Math.max(0, mensualiteCredit * duree * 12 - emprunt);
+  const interetsAnnuelsMoyens = duree > 0 ? totalInterets / duree : 0;
+
+  const rentabiliteBrute = coutTotal > 0 ? (loyerAnnuelBrut / coutTotal) * 100 : 0;
+  const rentabiliteNette = coutTotal > 0 ? ((loyerAnnuelEffectif - chargesCourantes) / coutTotal) * 100 : 0;
+
+  // ---- Fiscalité (estimation simplifiée) ----
+  const chargesDeductiblesFoncier = chargesCourantes + interetsAnnuelsMoyens + assuranceEmpruntAnnuelle;
+  let revenuImposable = 0;
+  let impot = 0;
+  const psRate = 0.172;
+
+  if (regime === 'micro-foncier'){
+    revenuImposable = loyerAnnuelEffectif * (1 - 0.3);
+    impot = revenuImposable * (tmi / 100 + psRate);
+  } else if (regime === 'reel-foncier'){
+    revenuImposable = loyerAnnuelEffectif - chargesDeductiblesFoncier;
+    if (revenuImposable >= 0){
+      impot = revenuImposable * (tmi / 100 + psRate);
+    } else {
+      const deficitImputable = Math.min(-revenuImposable, 10700);
+      impot = -(deficitImputable * (tmi / 100));
+      revenuImposable = 0;
+    }
+  } else if (regime === 'lmnp-micro'){
+    revenuImposable = loyerAnnuelEffectif * (1 - 0.5);
+    impot = revenuImposable * (tmi / 100 + psRate);
+  } else if (regime === 'lmnp-reel'){
+    const amortissementEstime = prix * 0.025;
+    revenuImposable = Math.max(0, loyerAnnuelEffectif - chargesDeductiblesFoncier - amortissementEstime);
+    impot = revenuImposable * (tmi / 100 + psRate);
+  }
+
+  const cashflowAvantImpotMensuel = (loyerAnnuelEffectif - chargesCourantes) / 12 - mensualiteTotale;
+  const cashflowApresImpotMensuel = cashflowAvantImpotMensuel - impot / 12;
+  const rentabiliteNetteNette = coutTotal > 0 ? ((loyerAnnuelEffectif - chargesCourantes - impot) / coutTotal) * 100 : 0;
+
+  document.getElementById('a-empty').style.display = 'none';
+  document.getElementById('a-filled').style.display = '';
+
+  renderGauge('a-gauge', rentabiliteNette, 'Rentabilité nette de charges');
+  document.getElementById('a-coutTotal').textContent = fmtEUR(coutTotal);
+  document.getElementById('a-rentaBrute').textContent = fmtPct(rentabiliteBrute);
+  document.getElementById('a-chargesTotal').textContent = fmtEUR(chargesCourantes);
+  document.getElementById('a-emprunt').textContent = fmtEUR(emprunt);
+  document.getElementById('a-mensualite').textContent = fmtEUR(mensualiteTotale);
+  document.getElementById('a-revenuImposable').textContent = fmtEUR(revenuImposable);
+
+  document.getElementById('a-impot').textContent = fmtEUR(impot);
+  const impotRow = document.getElementById('a-impotRow');
+  impotRow.classList.remove('pos');
+  if (impot < 0) impotRow.classList.add('pos');
+
+  document.getElementById('a-rentaNetteNette').textContent = fmtPct(rentabiliteNetteNette);
+  document.getElementById('a-cashflowAvant').textContent = (cashflowAvantImpotMensuel >= 0 ? '+' : '') + fmtEUR(cashflowAvantImpotMensuel);
+
+  document.getElementById('a-cashflowApres').textContent = (cashflowApresImpotMensuel >= 0 ? '+' : '') + fmtEUR(cashflowApresImpotMensuel);
+  const cfRow = document.getElementById('a-cashflowApresRow');
+  cfRow.classList.remove('pos','neg');
+  cfRow.classList.add(cashflowApresImpotMensuel >= 0 ? 'pos' : 'neg');
+}
+document.getElementById('btnCalcAdvanced').addEventListener('click', calculerAvance);
+</script>
+
+<button id="backToTop" class="back-to-top" aria-label="Revenir en haut de la page" title="Revenir en haut">↑</button>
+<script>
+(function(){
+  var btn = document.getElementById('backToTop');
+  if(!btn) return;
+  window.addEventListener('scroll', function(){
+    if(window.scrollY > 400){ btn.classList.add('show'); } else { btn.classList.remove('show'); }
+  });
+  btn.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+})();
+</script>
+</body>
+</html>

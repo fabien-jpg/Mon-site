@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulateur PER — Facilpro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* =========================================================
+   Styles spécifiques au module « PER ».
+   Complètent style.css (mêmes variables, mêmes composants).
+   ========================================================= */
+
+.field select{
+  width:100%;
+  padding:5px 12px 7px 0;
+  border:none;
+  border-bottom:1.5px solid var(--border);
+  border-radius:0;
+  background:transparent;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:15px;
+  color:var(--ink);
+  cursor:pointer;
+  transition:border-color .15s ease;
+}
+.field select:focus{outline:none;border-bottom-color:var(--brass);}
+
+/* Sous-sections numérotées du formulaire */
+.sub{margin-bottom:30px;}
+.sub-head{
+  display:flex;
+  align-items:baseline;
+  gap:9px;
+  margin-bottom:16px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+.sub-head .num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--brass-deep);letter-spacing:.05em;}
+.sub-head h3{font-family:'Fraunces',serif;font-size:16.5px;font-weight:600;margin:0;color:var(--ink);}
+.sub .grid{gap:18px 24px;}
+
+/* Bascule Salarié / TNS et Déduit / Non déduit */
+.segment{
+  display:flex;
+  border:1px solid var(--ink);
+  border-radius:3px;
+  overflow:hidden;
+  margin-bottom:18px;
+}
+.segment button{
+  flex:1;
+  padding:10px 4px;
+  border:0;
+  background:var(--surface);
+  color:var(--muted);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;
+  font-weight:600;
+  letter-spacing:.03em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:background .15s ease, color .15s ease;
+}
+.segment button+button{border-left:1px solid var(--ink);}
+.segment button[aria-pressed="true"]{background:var(--ink);color:#fff;}
+.segment button:hover:not([aria-pressed="true"]){background:var(--brass-soft);}
+
+/* Callout économie d'impôt à l'entrée */
+.callout-entree{
+  background:var(--ink);
+  border-radius:4px;
+  padding:22px 26px;
+  margin:24px 0;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:12px;
+}
+.callout-entree .lib{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:rgba(247,242,230,.6);
+}
+.callout-entree .val{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:32px;
+  color:var(--brass-light);
+}
+.callout-entree .sub{
+  width:100%;
+  margin:6px 0 0;
+  font-size:12.5px;
+  color:rgba(247,242,230,.55);
+}
+
+/* Comparatif capital / rente */
+.comparatif{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+  margin-top:8px;
+}
+@media (max-width:700px){ .comparatif{grid-template-columns:1fr;} }
+.compare-panel{
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:22px;
+}
+.compare-panel h4{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--brass-deep);
+  margin:0 0 4px;
+}
+.compare-panel .headline{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:28px;
+  color:var(--ink);
+  margin:2px 0 16px;
+}
+.compare-panel .headline span{
+  font-size:13px;
+  font-weight:500;
+  color:var(--muted);
+  font-family:'Inter',sans-serif;
+}
+.compare-line{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:7px 0;
+  border-bottom:1px solid var(--border);
+  font-size:12.5px;
+}
+.compare-line:last-child{border-bottom:0;}
+.compare-line .l{color:var(--muted);}
+.compare-line .v{
+  font-family:'IBM Plex Mono',monospace;
+  font-weight:600;
+  color:var(--ink);
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+
+.resultat-vide{
+  border:1px dashed var(--border);
+  border-radius:3px;
+  padding:32px 18px;
+  text-align:center;
+  color:var(--muted);
+  font-size:13.5px;
+  line-height:1.6;
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <p class="eyebrow">Simulateur — épargne retraite</p>
+  <h1>Que vaut vraiment votre PER, une fois la fiscalité passée ?</h1>
+  <p>Versements, économie d'impôt à l'entrée, puis comparatif sortie en capital contre sortie en rente viagère — selon votre statut, votre choix de déductibilité et vos tranches d'imposition actuelle et future.</p>
+</header>
+
+<main>
+
+  <nav class="quick-nav">
+    <a href="index.html" class="quick-nav-home">← Accueil</a>
+  </nav>
+
+  <div class="block-frame">
+  <section class="card" id="per-section">
+    <div class="card-head">
+      <h2>Simulateur PER</h2>
+      <span class="tag">Déduction &amp; sortie capital / rente</span>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head"><span class="num">01</span><h3>Votre situation</h3></div>
+
+      <div class="segment" role="group" aria-label="Statut professionnel">
+        <button type="button" id="perBtnSalarie" aria-pressed="true">Salarié</button>
+        <button type="button" id="perBtnTns" aria-pressed="false">Travailleur non salarié</button>
+      </div>
+
+      <div class="grid">
+        <div class="field">
+          <label for="per-revenu" id="per-revenu-label">Revenus nets de frais professionnels (N-1)</label>
+          <div class="input-wrap"><input type="text" id="per-revenu" inputmode="decimal" value="45 000"><span class="unit">€</span></div>
+        </div>
+        <div class="field">
+          <label for="per-tmiActuelle">TMI actuelle</label>
+          <div class="input-wrap">
+            <select id="per-tmiActuelle">
+              <option value="0">0 %</option>
+              <option value="11">11 %</option>
+              <option value="30" selected>30 %</option>
+              <option value="41">41 %</option>
+              <option value="45">45 %</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="per-tmiRetraite">TMI estimée à la retraite</label>
+          <div class="input-wrap">
+            <select id="per-tmiRetraite">
+              <option value="0">0 %</option>
+              <option value="11" selected>11 %</option>
+              <option value="30">30 %</option>
+              <option value="41">41 %</option>
+              <option value="45">45 %</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="per-ageActuel">Âge actuel</label>
+          <div class="input-wrap"><input type="text" id="per-ageActuel" inputmode="decimal" value="40"><span class="unit">ans</span></div>
+        </div>
+        <div class="field">
+          <label for="per-ageRetraite">Âge de départ à la retraite</label>
+          <div class="input-wrap"><input type="text" id="per-ageRetraite" inputmode="decimal" value="65"><span class="unit">ans</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head"><span class="num">02</span><h3>Épargne programmée</h3></div>
+      <div class="grid">
+        <div class="field">
+          <label for="per-versementInitial">Versement initial</label>
+          <div class="input-wrap"><input type="text" id="per-versementInitial" inputmode="decimal" value="2 000"><span class="unit">€</span></div>
+        </div>
+        <div class="field">
+          <label for="per-frequence">Fréquence des versements</label>
+          <div class="input-wrap">
+            <select id="per-frequence">
+              <option value="12">Mensuelle</option>
+              <option value="4">Trimestrielle</option>
+              <option value="2">Semestrielle</option>
+              <option value="1">Annuelle</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="per-versementPeriodique">Montant du versement périodique</label>
+          <div class="input-wrap"><input type="text" id="per-versementPeriodique" inputmode="decimal" value="300"><span class="unit">€</span></div>
+        </div>
+        <div class="field">
+          <label for="per-taux">Taux de rendement annuel</label>
+          <div class="input-wrap"><input type="text" id="per-taux" inputmode="decimal" value="4"><span class="unit">%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head"><span class="num">03</span><h3>Déductibilité des versements</h3></div>
+      <div class="segment" role="group" aria-label="Choix de déductibilité">
+        <button type="button" id="perBtnDeduit" aria-pressed="true">Versements déduits</button>
+        <button type="button" id="perBtnNonDeduit" aria-pressed="false">Versements non déduits</button>
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin:0;line-height:1.5;">Ce choix se fait à chaque versement. Il détermine à la fois l'économie d'impôt à l'entrée et le régime fiscal appliqué à la sortie.</p>
+    </div>
+
+    <div class="sub" style="margin-bottom:6px;">
+      <div class="sub-head"><span class="num">04</span><h3>Sortie en rente</h3></div>
+      <div class="grid">
+        <div class="field">
+          <label for="per-tauxConversion">Taux de conversion en rente viagère
+            <span style="display:block;font-weight:400;font-size:11px;color:var(--muted);margin-top:4px;">Variable selon assureur, âge et sexe — 4 à 5 % est une fourchette usuelle vers 65 ans</span>
+          </label>
+          <div class="input-wrap"><input type="text" id="per-tauxConversion" inputmode="decimal" value="4,5"><span class="unit">%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-row">
+      <button class="calc-btn" id="perCalculerBtn">Calculer</button>
+      <button class="calc-btn secondary" id="perReinitialiserBtn">Réinitialiser</button>
+    </div>
+
+    <div class="notice" id="perNoticeErreur"></div>
+
+    <div class="divider"></div>
+
+    <div class="callout-entree" id="perCalloutEntree" style="display:none;">
+      <div>
+        <div class="lib">Économie d'impôt cumulée à l'entrée</div>
+        <div class="val" id="perEconomieEntree">0 €</div>
+      </div>
+      <div class="sub" id="perDetailPlafond"></div>
+    </div>
+
+    <div id="perResultatVide" class="resultat-vide">Renseignez votre situation puis cliquez sur « Calculer » pour comparer sortie en capital et sortie en rente.</div>
+
+    <div id="perResultat" style="display:none;">
+      <div class="comparatif">
+        <div class="compare-panel">
+          <h4>Sortie en capital</h4>
+          <div class="headline" id="perCapitalNet">0 € <span>net perçu</span></div>
+          <div class="compare-line"><span class="l">Capital brut constitué</span><span class="v" id="perCapCapitalBrut"></span></div>
+          <div class="compare-line"><span class="l">Part réintégrée au revenu imposable</span><span class="v" id="perCapPartDeduite"></span></div>
+          <div class="compare-line"><span class="l">Impôt sur cette part (TMI retraite)</span><span class="v" id="perCapImpotPrincipal"></span></div>
+          <div class="compare-line"><span class="l">Part non déduite (restituée nette)</span><span class="v" id="perCapPartNonDeduite"></span></div>
+          <div class="compare-line"><span class="l">Gains, nets de PFU 31,4 %</span><span class="v" id="perCapGainsNets"></span></div>
+        </div>
+        <div class="compare-panel">
+          <h4>Sortie en rente viagère</h4>
+          <div class="headline" id="perRenteNette">0 € <span>net / an</span></div>
+          <div class="compare-line"><span class="l">Rente brute annuelle</span><span class="v" id="perRenteBrute"></span></div>
+          <div class="compare-line"><span class="l">Régime fiscal applicable</span><span class="v" id="perRenteRegime"></span></div>
+          <div class="compare-line"><span class="l">Part imposable de la rente</span><span class="v" id="perRentePartImposable"></span></div>
+          <div class="compare-line"><span class="l">Impôt sur le revenu (annuel)</span><span class="v" id="perRenteImpot"></span></div>
+          <div class="compare-line"><span class="l">Prélèvements sociaux (annuels)</span><span class="v" id="perRentePs"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="toggle" id="perToggleTable">Afficher le tableau annuel</button>
+    <div class="table-wrap" id="perTableWrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Année</th>
+            <th>Versements de l'année</th>
+            <th>Dont déductible</th>
+            <th>Capital brut fin d'année</th>
+          </tr>
+        </thead>
+        <tbody id="perAmortBody"></tbody>
+      </table>
+    </div>
+
+  </section>
+  </div>
+
+</main>
+
+<footer>
+  Outil d'aide à la préparation de dossier, pas un conseil fiscal ni financier. Le plafond de déduction TNS est une estimation (formule usuelle 10 % + 15 % au-delà d'un PASS, plafonnée à 8 PASS) : le plafond exact figure sur votre avis d'imposition. La TMI est utilisée comme approximation du taux marginal, alors que le barème réel est progressif par tranche. Le taux de conversion en rente viagère est propre à chaque assureur et à sa table de mortalité : celui saisi ici est une hypothèse, pas un taux garanti. Chiffres en vigueur au 1<sup>er</sup> août 2026 (PASS 2025 = 47 100 €, prélèvements sociaux 18,6 % sur les revenus du capital et sur la RVTO, 9,1 % sur la rente à titre gratuit issue de versements déduits, LFSS 2026). La liquidation réelle de vos droits dépend de votre contrat et doit être vérifiée avec votre gestionnaire.
+</footer>
+
+<script>
+/* ===================== utilitaires ===================== */
+function formatEuro(n){
+  if(!isFinite(n)) n = 0;
+  return Math.round(n).toLocaleString('fr-FR',{maximumFractionDigits:0}) + ' €';
+}
+function lireNombre(id){
+  const raw = document.getElementById(id).value;
+  const normalized = String(raw).replace(/\s/g,'').replace(',', '.');
+  const parsed = parseFloat(normalized);
+  return isNaN(parsed) ? 0 : parsed;
+}
+
+/* ===================== bascules (statut / déductibilité) ===================== */
+let statutActuel = 'salarie';
+let deductibiliteActuelle = 'deduit';
+
+const labelRevenu = document.getElementById('per-revenu-label');
+document.getElementById('perBtnSalarie').addEventListener('click', function(){
+  statutActuel = 'salarie';
+  this.setAttribute('aria-pressed','true');
+  document.getElementById('perBtnTns').setAttribute('aria-pressed','false');
+  labelRevenu.textContent = 'Revenus nets de frais professionnels (N-1)';
+});
+document.getElementById('perBtnTns').addEventListener('click', function(){
+  statutActuel = 'tns';
+  this.setAttribute('aria-pressed','true');
+  document.getElementById('perBtnSalarie').setAttribute('aria-pressed','false');
+  labelRevenu.textContent = 'Bénéfice imposable (N-1)';
+});
+
+document.getElementById('perBtnDeduit').addEventListener('click', function(){
+  deductibiliteActuelle = 'deduit';
+  this.setAttribute('aria-pressed','true');
+  document.getElementById('perBtnNonDeduit').setAttribute('aria-pressed','false');
+});
+document.getElementById('perBtnNonDeduit').addEventListener('click', function(){
+  deductibiliteActuelle = 'nonDeduit';
+  this.setAttribute('aria-pressed','true');
+  document.getElementById('perBtnDeduit').setAttribute('aria-pressed','false');
+});
+
+document.getElementById('perToggleTable').addEventListener('click', function(){
+  const wrap = document.getElementById('perTableWrap');
+  const open = wrap.classList.toggle('open');
+  this.textContent = open ? "Masquer le tableau annuel" : "Afficher le tableau annuel";
+});
+
+/* ===================== plafond de déduction 2026 ===================== */
+// Formule usuelle, assise sur le PASS de l'année précédente (N-1 = 2025).
+const PASS_N1 = 47100;
+function calculerPlafond(statut, revenu){
+  const revenuPlafonne = Math.min(Math.max(0, revenu), 8 * PASS_N1);
+  const plancher = 0.10 * PASS_N1;
+  if (statut === 'salarie'){
+    return Math.max(0.10 * revenuPlafonne, plancher);
+  }
+  const part1 = 0.10 * revenuPlafonne;
+  const part2 = revenuPlafonne > PASS_N1 ? 0.15 * (revenuPlafonne - PASS_N1) : 0;
+  return Math.max(part1 + part2, plancher);
+}
+
+/* ===================== moteur de capitalisation ===================== */
+function simulerPER(versementInitial, tauxAnnuel, dureeAns, freqParAn, versementPeriodique){
+  const moisTotal = Math.max(1, Math.round(dureeAns * 12));
+  const freqMois = Math.max(1, Math.round(12 / freqParAn));
+  const tauxMensuel = (tauxAnnuel / 100) / 12;
+
+  let capital = versementInitial;
+  let versementsCumules = versementInitial;
+  const parAnnee = []; // {annee, versementAnnee, capitalFin}
+  let versementAnneeCourante = versementInitial;
+
+  for (let mois = 1; mois <= moisTotal; mois++){
+    capital += capital * tauxMensuel;
+    if (mois % freqMois === 0){
+      capital += versementPeriodique;
+      versementsCumules += versementPeriodique;
+      versementAnneeCourante += versementPeriodique;
+    }
+    if (mois % 12 === 0){
+      parAnnee.push({ annee: mois / 12, versementAnnee: versementAnneeCourante, capitalFin: capital });
+      versementAnneeCourante = 0;
+    }
+  }
+  if (moisTotal % 12 !== 0){
+    parAnnee.push({ annee: moisTotal / 12, versementAnnee: versementAnneeCourante, capitalFin: capital });
+  }
+
+  return { capitalBrut: capital, versementsCumules, interetsBruts: capital - versementsCumules, parAnnee };
+}
+
+/* ===================== fraction imposable de la RVTO selon l'âge ===================== */
+function fractionRVTO(age){
+  if (age < 50) return 0.70;
+  if (age < 60) return 0.50;
+  if (age < 70) return 0.40;
+  return 0.30;
+}
+
+/* ===================== calcul principal ===================== */
+function calculerPER(){
+  const revenu = lireNombre('per-revenu');
+  const tmiActuelle = lireNombre('per-tmiActuelle');
+  const tmiRetraite = lireNombre('per-tmiRetraite');
+  const ageActuel = lireNombre('per-ageActuel');
+  const ageRetraite = lireNombre('per-ageRetraite');
+  const versementInitial = lireNombre('per-versementInitial');
+  const frequence = parseInt(document.getElementById('per-frequence').value, 10);
+  const versementPeriodique = lireNombre('per-versementPeriodique');
+  const taux = lireNombre('per-taux');
+  const tauxConversion = lireNombre('per-tauxConversion');
+
+  const notice = document.getElementById('perNoticeErreur');
+  const erreurs = [];
+  const duree = ageRetraite - ageActuel;
+  if (duree <= 0) erreurs.push("L'âge de départ à la retraite doit être supérieur à l'âge actuel.");
+  if (revenu < 0) erreurs.push("Le revenu doit être positif ou nul.");
+  if (taux < 0) erreurs.push("Le taux de rendement doit être positif ou nul.");
+  if (tauxConversion <= 0) erreurs.push("Le taux de conversion en rente doit être positif.");
+
+  if (erreurs.length){
+    notice.innerHTML = erreurs.join('<br>');
+    notice.classList.add('show');
+    document.getElementById('perCalloutEntree').style.display = 'none';
+    document.getElementById('perResultat').style.display = 'none';
+    document.getElementById('perResultatVide').style.display = 'block';
+    return;
+  }
+  notice.classList.remove('show');
+
+  const sim = simulerPER(versementInitial, taux, duree, frequence, versementPeriodique);
+  const plafond = calculerPlafond(statutActuel, revenu);
+
+  let totalDeductible = 0, totalNonDeductible = 0;
+  sim.parAnnee.forEach(a => {
+    const ded = Math.min(a.versementAnnee, plafond);
+    a.deductible = ded;
+    totalDeductible += ded;
+    totalNonDeductible += (a.versementAnnee - ded);
+  });
+
+  const estDeduit = (deductibiliteActuelle === 'deduit');
+  const economieEntree = estDeduit ? totalDeductible * tmiActuelle / 100 : 0;
+
+  // ---- Sortie en capital ----
+  const PS_CAPITAL = 18.6;
+  const gainsNets = sim.interetsBruts * (1 - (0.128 + PS_CAPITAL / 100));
+  const impotSurGains = sim.interetsBruts - gainsNets;
+
+  let capitalNet, partDeduiteAffiche, impotPrincipal, partNonDeduiteAffiche;
+  if (estDeduit){
+    partDeduiteAffiche = totalDeductible;
+    impotPrincipal = totalDeductible * tmiRetraite / 100;
+    partNonDeduiteAffiche = totalNonDeductible;
+    capitalNet = (totalDeductible - impotPrincipal) + totalNonDeductible + gainsNets;
+  } else {
+    partDeduiteAffiche = 0;
+    impotPrincipal = 0;
+    partNonDeduiteAffiche = sim.versementsCumules;
+    capitalNet = sim.versementsCumules + gainsNets;
+  }
+
+  // ---- Sortie en rente ----
+  const renteBrute = sim.capitalBrut * tauxConversion / 100;
+  let partImposableRente, impotRente, psRente, regimeLabel;
+  if (estDeduit){
+    partImposableRente = renteBrute * 0.90; // abattement de 10 %, régime des pensions
+    impotRente = partImposableRente * tmiRetraite / 100;
+    psRente = partImposableRente * 9.1 / 100; // prélèvements sociaux sur pensions, taux plein
+    regimeLabel = 'Pensions (abattement 10 %)';
+  } else {
+    const fraction = fractionRVTO(ageRetraite);
+    partImposableRente = renteBrute * fraction;
+    impotRente = partImposableRente * tmiRetraite / 100;
+    psRente = partImposableRente * 18.6 / 100; // RVTO : prélèvements sociaux sur revenus du capital
+    regimeLabel = `RVTO (${Math.round(fraction*100)} % imposable à ${ageRetraite} ans)`;
+  }
+  const renteNette = renteBrute - impotRente - psRente;
+
+  // ---- Affichage ----
+  const callout = document.getElementById('perCalloutEntree');
+  document.getElementById('perEconomieEntree').textContent = formatEuro(economieEntree);
+  document.getElementById('perDetailPlafond').innerHTML =
+    `Plafond de déduction retenu : ${formatEuro(plafond)} / an` +
+    (totalNonDeductible > 0.5 ? ` — ${formatEuro(totalNonDeductible)} de versements dépassent le plafond sur la période et ne sont jamais déduits.` : '.');
+  callout.style.display = 'flex';
+
+  document.getElementById('perResultatVide').style.display = 'none';
+  document.getElementById('perResultat').style.display = 'block';
+
+  document.getElementById('perCapitalNet').innerHTML = formatEuro(capitalNet) + ' <span>net perçu</span>';
+  document.getElementById('perCapCapitalBrut').textContent = formatEuro(sim.capitalBrut);
+  document.getElementById('perCapPartDeduite').textContent = formatEuro(partDeduiteAffiche);
+  document.getElementById('perCapImpotPrincipal').textContent = formatEuro(impotPrincipal);
+  document.getElementById('perCapPartNonDeduite').textContent = formatEuro(partNonDeduiteAffiche);
+  document.getElementById('perCapGainsNets').textContent = formatEuro(gainsNets);
+
+  document.getElementById('perRenteNette').innerHTML = formatEuro(renteNette) + ' <span>net / an</span>';
+  document.getElementById('perRenteBrute').textContent = formatEuro(renteBrute);
+  document.getElementById('perRenteRegime').textContent = regimeLabel;
+  document.getElementById('perRentePartImposable').textContent = formatEuro(partImposableRente);
+  document.getElementById('perRenteImpot').textContent = formatEuro(impotRente);
+  document.getElementById('perRentePs').textContent = formatEuro(psRente);
+
+  const body = document.getElementById('perAmortBody');
+  body.innerHTML = sim.parAnnee.map(a => `
+    <tr>
+      <td>${Number.isInteger(a.annee) ? a.annee : a.annee.toFixed(1)}</td>
+      <td>${formatEuro(a.versementAnnee)}</td>
+      <td>${formatEuro(a.deductible)}</td>
+      <td>${formatEuro(a.capitalFin)}</td>
+    </tr>
+  `).join('');
+}
+document.getElementById('perCalculerBtn').addEventListener('click', calculerPER);
+
+/* ===================== réinitialisation ===================== */
+function reinitialiserPER(){
+  document.getElementById('perBtnSalarie').click();
+  document.getElementById('perBtnDeduit').click();
+  document.getElementById('per-revenu').value = '45 000';
+  document.getElementById('per-tmiActuelle').value = '30';
+  document.getElementById('per-tmiRetraite').value = '11';
+  document.getElementById('per-ageActuel').value = '40';
+  document.getElementById('per-ageRetraite').value = '65';
+  document.getElementById('per-versementInitial').value = '2 000';
+  document.getElementById('per-frequence').value = '12';
+  document.getElementById('per-versementPeriodique').value = '300';
+  document.getElementById('per-taux').value = '4';
+  document.getElementById('per-tauxConversion').value = '4,5';
+
+  document.getElementById('perNoticeErreur').classList.remove('show');
+  document.getElementById('perCalloutEntree').style.display = 'none';
+  document.getElementById('perResultat').style.display = 'none';
+  document.getElementById('perResultatVide').style.display = 'block';
+  document.getElementById('perAmortBody').innerHTML = '';
+
+  const tableWrap = document.getElementById('perTableWrap');
+  tableWrap.classList.remove('open');
+  document.getElementById('perToggleTable').textContent = "Afficher le tableau annuel";
+}
+document.getElementById('perReinitialiserBtn').addEventListener('click', reinitialiserPER);
+</script>
+
+<button id="backToTop" class="back-to-top" aria-label="Revenir en haut de la page" title="Revenir en haut">↑</button>
+<script>
+(function(){
+  var btn = document.getElementById('backToTop');
+  if(!btn) return;
+  window.addEventListener('scroll', function(){
+    if(window.scrollY > 400){ btn.classList.add('show'); } else { btn.classList.remove('show'); }
+  });
+  btn.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+})();
+</script>
+</body>
+</html>

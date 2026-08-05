@@ -1,0 +1,716 @@
+/* =========================================================
+   Facilpro — feuille de styles partagée
+   (crédit, investissement locatif, transmission, fiscalité, épargne)
+
+   Direction : le dossier du conseiller, tenue papier chaud / encre /
+   laiton — inspirée du simulateur de rentabilité locative. Cartes
+   ivoire plutôt que blanc pur, chiffres en tabulaire, une couleur de
+   signature (laiton) pour les actions, forêt et terre cuite réservées
+   aux résultats positifs / négatifs.
+   ========================================================= */
+
+/* ---------- Variables (tokens) ---------- */
+:root{
+  /* Encre & papier */
+  --ink:#16232B;          /* texte principal, panneaux sombres */
+  --ink-soft:#22343D;     /* variante plus douce de l'encre */
+  --bg:#EADFCD;           /* fond de page (papier chaud, calé sur le logo) */
+  --block-bg:#16232B;     /* fond de chaque bloc simulateur (reprend --ink) */
+  --surface:#F7F2E6;      /* carte (ivoire, jamais blanc pur) */
+  --surface-alt:#F0E9DA;  /* zébrage de tableau, pistes de jauge */
+  --border:rgba(22,35,43,.16);
+  --border-light:rgba(247,242,230,.22); /* filets sur fond sombre */
+  --muted:#5F6E75;        /* texte secondaire (slate) */
+
+  /* Signature : laiton */
+  --primary:#AE8A4E;          /* alias legacy → laiton (CTA, accents) */
+  --primary-dark:#16232B;     /* alias legacy → encre (titres, hover foncé) */
+  --brass:#AE8A4E;
+  --brass-light:#CBA96C;
+  --brass-deep:#8B6E3D;
+  --brass-soft:#F1E6CE;
+
+  /* Fonctionnel */
+  --accent:#8B6E3D;            /* alias legacy → laiton foncé (liens, survols) */
+  --accent-soft:#F1E6CE;       /* alias legacy → laiton pâle */
+  --forest:#33513E;            /* positif / exonération */
+  --forest-soft:#E7EDE9;
+  --rust:#9C4A34;              /* négatif / alerte */
+  --warn:#9C4A34;              /* alias legacy → terre cuite */
+  --warn-soft:#F4E3DC;
+  --ok:#33513E;                /* alias legacy → forêt */
+}
+
+/* ---------- Base ---------- */
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Inter',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  padding:0 0 72px;
+}
+::selection{background:var(--brass-soft);color:var(--ink);}
+a{color:inherit;}
+:focus-visible{outline:2px solid var(--brass);outline-offset:2px;}
+
+/* ---------- En-tête / masthead ---------- */
+header.top{
+  padding:56px 24px 36px;
+  max-width:960px;
+  margin:0 auto;
+  text-align:left;
+  border-bottom:1px solid var(--border);
+}
+header.top .logo{
+  height:256px;
+  width:auto;
+  display:block;
+  margin:0 auto 24px;
+}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--brass);
+  font-weight:600;
+  margin:0 0 14px;
+}
+h1{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:clamp(28px,4.2vw,42px);
+  line-height:1.14;
+  margin:0 0 14px;
+  color:var(--ink);
+}
+header.top p{
+  color:var(--muted);
+  font-size:15.5px;
+  line-height:1.6;
+  max-width:580px;
+  margin:0;
+}
+
+/* ---------- Mise en page principale ---------- */
+main{
+  max-width:960px;
+  margin:0 auto;
+  padding:0 24px;
+  display:flex;
+  flex-direction:column;
+  gap:28px;
+}
+
+/* ---------- Navigation rapide (fil discret) ---------- */
+.quick-nav{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:4px;
+  margin-bottom:-6px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11.5px;
+}
+.quick-nav a{
+  color:var(--muted);
+  font-weight:600;
+  letter-spacing:.03em;
+  text-transform:uppercase;
+  text-decoration:none;
+  padding:8px 10px;
+  border-radius:3px;
+  transition:color .15s ease, background .15s ease;
+}
+.quick-nav a:not(:last-child)::after{
+  content:"/";
+  margin-left:14px;
+  color:var(--border);
+}
+.quick-nav-home{
+  color:var(--brass-deep) !important;
+}
+.quick-nav a:hover{
+  background:var(--surface);
+  color:var(--ink);
+}
+.quick-nav-home:hover{
+  color:var(--brass-deep) !important;
+  background:var(--brass-soft);
+}
+
+/* ---------- Cadre de bloc (mat encre) + carte ivoire ---------- */
+.block-frame{
+  padding:20px;
+  border-radius:4px;
+  background:var(--block-bg);
+  position:relative;
+}
+.block-frame::before{
+  content:"";
+  position:absolute;
+  inset:8px;
+  border:1px solid rgba(174,138,78,.35);
+  border-radius:2px;
+  pointer-events:none;
+}
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:34px;
+  position:relative;
+}
+.card-head{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:26px;
+  padding-bottom:16px;
+  border-bottom:1px solid var(--border);
+  flex-wrap:wrap;
+}
+.card-head h2{
+  font-family:'Fraunces',serif;
+  font-size:22px;
+  font-weight:600;
+  margin:0;
+  color:var(--ink);
+}
+.card-head .tag{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--brass-deep);
+  font-weight:600;
+}
+
+/* ---------- Grille de champs de saisie ---------- */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:20px 24px;
+}
+.field label{
+  display:block;
+  font-family:'Inter',sans-serif;
+  font-size:11.5px;
+  letter-spacing:.02em;
+  font-weight:500;
+  color:var(--muted);
+  margin-bottom:7px;
+  transition:color .15s ease;
+}
+.field:focus-within label{color:var(--brass-deep);}
+.field .input-wrap{
+  position:relative;
+}
+.field input{
+  width:100%;
+  padding:5px 34px 7px 0;
+  border:none;
+  border-bottom:1.5px solid var(--border);
+  border-radius:0;
+  background:transparent;
+  font-family:'IBM Plex Mono',monospace;
+  font-variant-numeric:tabular-nums;
+  font-size:16px;
+  font-weight:500;
+  color:var(--ink);
+  transition:border-color .15s ease;
+}
+.field input:focus{
+  outline:none;
+  border-bottom-color:var(--brass);
+}
+.field .unit{
+  position:absolute;
+  right:0;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:12.5px;
+  color:var(--muted);
+  font-family:'Inter',sans-serif;
+  pointer-events:none;
+}
+
+/* ---------- Option "second emprunteur" / cases à cocher ---------- */
+.checkbox-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:20px;
+  font-size:13.5px;
+  font-weight:500;
+  color:var(--ink);
+  cursor:pointer;
+  user-select:none;
+}
+.checkbox-row input[type="checkbox"]{
+  width:16px;
+  height:16px;
+  accent-color:var(--brass);
+  cursor:pointer;
+}
+.second-emprunteur-fields{
+  display:none;
+  margin-top:18px;
+}
+.second-emprunteur-fields.open{
+  display:grid;
+}
+p.field-hint.second-emprunteur-fields{
+  display:none;
+  font-size:12.5px;
+  color:var(--muted);
+  margin:10px 0 0;
+  line-height:1.5;
+}
+p.field-hint.second-emprunteur-fields.open{
+  display:block;
+}
+
+/* ---------- Rangée de boutons + séparateur ---------- */
+.button-row{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.divider{
+  height:1px;
+  background:var(--border);
+  margin:28px 0;
+}
+
+/* ---------- Résultats mis en avant ---------- */
+.result-hero{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:flex-end;
+  gap:32px;
+  margin-bottom:22px;
+}
+.result-hero .big{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:clamp(34px,5.6vw,50px);
+  color:var(--ink);
+  line-height:1;
+}
+.result-hero .big span{
+  font-size:16px;
+  font-weight:500;
+  color:var(--muted);
+  font-family:'Inter',sans-serif;
+}
+.result-hero .sub-stats{
+  display:flex;
+  gap:28px;
+  flex-wrap:wrap;
+}
+.stat{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.stat .label{
+  font-size:10.5px;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+  color:var(--muted);
+  font-family:'IBM Plex Mono',monospace;
+}
+.stat .value{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:17px;
+  font-weight:600;
+  color:var(--ink);
+}
+
+/* ---------- Barre de composition (capital / intérêts / assurance) ---------- */
+.composition{
+  margin-top:26px;
+}
+.composition .bar{
+  display:flex;
+  width:100%;
+  height:10px;
+  border-radius:2px;
+  overflow:hidden;
+  background:var(--surface-alt);
+  border:1px solid var(--border);
+}
+.composition .seg{
+  height:100%;
+  transition:width .35s ease;
+}
+/* Couleurs + largeurs par défaut des segments (recalculées en JS après un calcul) */
+.seg-capital{background:var(--ink); width:60%;}
+.seg-interets{background:var(--brass); width:30%;}
+.seg-assurance{background:var(--brass-light); width:10%;}
+
+.composition .legend{
+  display:flex;
+  gap:22px;
+  margin-top:12px;
+  flex-wrap:wrap;
+}
+.composition .legend-item{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:12.5px;
+  color:var(--muted);
+}
+.legend-dot{
+  width:8px;height:8px;border-radius:1px;display:inline-block;
+}
+.legend-dot-capital{background:var(--ink);}
+.legend-dot-interets{background:var(--brass);}
+.legend-dot-assurance{background:var(--brass-light);}
+
+/* ---------- Boutons ---------- */
+.calc-btn{
+  margin-top:22px;
+  background:var(--brass);
+  border:1px solid var(--brass);
+  color:var(--surface);
+  font-family:'Inter',sans-serif;
+  font-weight:600;
+  font-size:14px;
+  letter-spacing:.02em;
+  padding:13px 28px;
+  border-radius:3px;
+  cursor:pointer;
+  transition:background .2s ease, border-color .2s ease, transform .1s ease;
+}
+.calc-btn:hover{
+  background:var(--brass-light);
+  border-color:var(--brass-light);
+}
+.calc-btn:active{
+  transform:scale(.98);
+}
+.calc-btn.secondary{
+  margin-top:24px;
+  background:transparent;
+  color:var(--ink);
+  border:1px solid var(--border);
+}
+.calc-btn.secondary:hover{
+  border-color:var(--ink);
+  background:var(--surface-alt);
+}
+.toggle{
+  margin-top:24px;
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--muted);
+  font-family:'IBM Plex Mono',monospace;
+  font-weight:600;
+  font-size:11.5px;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  padding:10px 18px;
+  border-radius:3px;
+  cursor:pointer;
+  transition:background .15s ease, border-color .15s ease, color .15s ease;
+}
+.toggle:hover{
+  border-color:var(--ink);
+  color:var(--ink);
+  background:var(--surface-alt);
+}
+
+/* ---------- Tableau d'amortissement ---------- */
+.table-wrap{
+  margin-top:20px;
+  max-height:360px;
+  overflow-y:auto;
+  border:1px solid var(--border);
+  border-radius:3px;
+  display:none;
+}
+.table-wrap.open{display:block;}
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12.5px;
+}
+thead th{
+  position:sticky;
+  top:0;
+  background:var(--surface);
+  color:var(--muted);
+  text-align:right;
+  padding:11px 14px;
+  font-weight:600;
+  font-size:10.5px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  border-bottom:1.5px solid var(--ink);
+}
+thead th:first-child, tbody td:first-child{text-align:left;}
+tbody td{
+  padding:9px 14px;
+  text-align:right;
+  border-bottom:1px solid var(--border);
+  color:var(--ink);
+  font-variant-numeric:tabular-nums;
+}
+tbody tr:nth-child(even){background:var(--surface-alt);}
+
+/* Utilitaires de cellule, réutilisés par les pages de référence (tableaux
+   à en-têtes explicites où seules certaines colonnes sont numériques) */
+.num{
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+.ref{
+  display:block;
+  font-size:11px;
+  color:var(--muted);
+  font-weight:400;
+}
+
+/* ---------- Jauges de taux d'endettement (capacité d'emprunt) ---------- */
+.gauge-caption{
+  font-size:11.5px;
+  color:var(--muted);
+  font-family:'IBM Plex Mono',monospace;
+  margin:0 0 8px;
+}
+.gauge-wrap{
+  margin-top:8px;
+}
+.gauge-wrap-second{
+  margin-top:26px;
+}
+.gauge{
+  position:relative;
+  width:100%;
+  height:8px;
+  border-radius:1px;
+  background:var(--surface-alt);
+  border:1px solid var(--border);
+  overflow:visible;
+}
+.gauge-fill{
+  height:100%;
+  width:0%;
+  border-radius:1px;
+  background:var(--brass);
+  transition:width .3s ease, background .3s ease;
+}
+.gauge-fill.over{background:var(--rust);}
+.gauge-threshold{
+  position:absolute;
+  left:35%;
+  top:-4px;
+  bottom:-4px;
+  width:2px;
+  background:var(--ink);
+}
+.gauge-threshold::after{
+  content:'35%';
+  position:absolute;
+  top:-20px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:10.5px;
+  font-family:'IBM Plex Mono',monospace;
+  color:var(--ink);
+  font-weight:600;
+}
+
+/* ---------- Messages d'alerte et encart pédagogique ---------- */
+.notice{
+  margin-top:16px;
+  padding:13px 16px;
+  border-radius:3px;
+  border-left:3px solid var(--rust);
+  font-size:13.5px;
+  line-height:1.5;
+  background:var(--warn-soft);
+  color:#5C2A1D;
+  display:none;
+}
+.notice.show{display:block;}
+
+.insight-box{
+  margin-top:24px;
+  padding:16px 18px;
+  border-radius:3px;
+  border-left:3px solid var(--brass);
+  background:var(--brass-soft);
+  display:none;
+}
+.insight-box.show{display:block;}
+.insight-box .insight-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+  color:var(--brass-deep);
+  font-weight:600;
+  margin:0 0 6px;
+}
+.insight-box p{
+  margin:0;
+  font-size:14px;
+  line-height:1.55;
+  color:var(--ink);
+}
+
+/* ---------- Pied de page ---------- */
+footer{
+  max-width:960px;
+  margin:48px auto 0;
+  padding:24px 24px 0;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.65;
+  border-top:1px solid var(--border);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width:560px){
+  .card{padding:24px;}
+  .block-frame{padding:12px;}
+  .block-frame::before{inset:6px;}
+  .result-hero{gap:20px;}
+}
+
+/* ---------- En-tête de sous-section (titre + compteur) ---------- */
+.index-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:16px;
+  padding-bottom:14px;
+  margin-bottom:4px;
+  border-bottom:1px solid var(--border);
+}
+.index-head h2{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:20px;
+  margin:0;
+  color:var(--ink);
+}
+.index-head span{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+/* ---------- Pages de référence (sections numérotées, tableaux, pastilles) ---------- */
+.ref-section{margin-bottom:36px;}
+.ref-section:last-child{margin-bottom:0;}
+.ref-section-head{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:6px;
+}
+.ref-section-head h3{
+  font-family:'Fraunces',serif;
+  font-size:19px;
+  font-weight:600;
+  margin:0;
+  color:var(--ink);
+}
+.ref-section-head span{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--brass-deep);
+}
+.ref-section-note{
+  font-size:12.5px;
+  color:var(--muted);
+  margin:0 0 14px;
+  line-height:1.5;
+}
+
+.tbl-wrap{
+  overflow-x:auto;
+  border:1px solid var(--border);
+  border-radius:3px;
+}
+.tbl-wrap table{min-width:640px;}
+/* Certaines pages de référence ont plusieurs colonnes de texte (Conditions,
+   Fiscalité…) qui doivent rester alignées à gauche, contrairement au tableau
+   d'amortissement du site (majoritairement numérique) aligné à droite. */
+.tbl-wrap thead th, .tbl-wrap tbody td{text-align:left;}
+.tbl-wrap th.num, .tbl-wrap td.num{text-align:right;}
+.tbl-wrap td:first-child{
+  font-weight:600;
+  color:var(--ink);
+}
+
+.legende{
+  font-size:11.5px;
+  color:var(--muted);
+  margin-top:8px;
+  line-height:1.5;
+}
+.pastille{
+  display:inline-block;
+  padding:2px 8px;
+  border-radius:999px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  font-weight:600;
+  letter-spacing:.02em;
+}
+.pastille-exo{background:var(--forest-soft);color:var(--forest);}
+.pastille-fisc{background:var(--brass-soft);color:var(--brass-deep);}
+.pastille-risque{background:var(--warn-soft);color:#8A3A22;}
+
+/* ---------- Bouton flottant "retour en haut" ---------- */
+.back-to-top{
+  position:fixed;
+  right:22px;
+  bottom:26px;
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:var(--ink);
+  color:var(--brass-light);
+  border:1px solid var(--brass);
+  font-size:17px;
+  line-height:1;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  visibility:hidden;
+  transform:translateY(10px);
+  transition:opacity .25s ease, transform .25s ease, visibility .25s, background .15s ease, color .15s ease;
+  box-shadow:0 10px 24px rgba(22,35,43,.3);
+  z-index:60;
+}
+.back-to-top.show{
+  opacity:1;
+  visibility:visible;
+  transform:translateY(0);
+}
+.back-to-top:hover{
+  background:var(--brass);
+  color:var(--ink);
+}
+@media (max-width:560px){
+  .back-to-top{right:14px;bottom:16px;width:40px;height:40px;}
+}
