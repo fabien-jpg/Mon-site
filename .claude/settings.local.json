@@ -7,7 +7,10 @@
       "Bash(git push *)",
       "Bash(git fetch *)",
       "Bash(git pull *)",
-      "Bash(gh run *)"
+      "Bash(gh run *)",
+      "Read(//c/Users/flomb/Downloads/**)",
+      "Read(//c/Users/flomb/**)",
+      "Bash(cp /c/Users/flomb/Downloads/simulateurs.html \"www/facilipro/www/simulateurs.html\" && git status)"
     ]
   }
 }
