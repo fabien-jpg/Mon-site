@@ -1,5 +1,5 @@
 /* =========================================================
-   Facilpro — feuille de styles partagée
+   Bankora — feuille de styles partagée
    (crédit, investissement locatif, transmission, fiscalité, épargne)
 
    Direction : outil pro dense et rapide à scanner, inspiré des
@@ -42,6 +42,11 @@
   --warn:#C0392B;               /* alias legacy → rouge alerte */
   --warn-soft:#FBEAE7;
   --ok:#2F7D5B;                 /* alias legacy → vert positif */
+
+  /* Identité de marque Bankora */
+  --masthead-bg:#10163A;
+  --logo-grad-1:#AEBBF2;
+  --logo-grad-2:#5568D9;
 }
 
 /* ---------- Base ---------- */
@@ -854,4 +859,31 @@ footer{
   background:var(--surface-alt);
   color:var(--ink);
   border-color:var(--brass);
+}
+
+/* ---------- Masthead sombre (identité Bankora) ---------- */
+.masthead{background:var(--masthead-bg);}
+.masthead-inner{
+  max-width:960px;margin:0 auto;padding:18px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:14px;
+}
+.logo-lockup{display:flex;align-items:center;gap:16px;text-decoration:none;}
+.logo-mark{display:block;flex-shrink:0;}
+.logo-divider{width:1px;height:30px;background:rgba(255,255,255,.22);}
+.logo-word{display:flex;flex-direction:column;gap:2px;}
+.logo-word .name{
+  font-family:'Manrope',sans-serif;
+  font-size:17px;font-weight:800;letter-spacing:.05em;color:#fff;line-height:1;
+}
+.logo-word .tagline{
+  font-family:'Manrope',sans-serif;
+  font-size:9.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;
+  color:var(--logo-grad-1);line-height:1.4;
+}
+.masthead nav{display:flex;gap:22px;font-family:'Manrope',sans-serif;font-size:13px;font-weight:600;}
+.masthead nav a{color:rgba(255,255,255,.7);text-decoration:none;transition:color .15s ease;}
+.masthead nav a:hover{color:#fff;}
+@media (max-width:560px){
+  .masthead nav{display:none;}
 }
