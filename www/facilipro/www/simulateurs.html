@@ -129,8 +129,8 @@
       <div class="field">
         <label for="duree">Durée</label>
         <div class="input-wrap">
-          <input type="number" id="duree" value="20" min="1" step="1">
-          <span class="unit">ans</span>
+          <input type="number" id="duree" value="240" min="1" step="1">
+          <span class="unit">mois</span>
         </div>
       </div>
       <div class="field">
@@ -151,7 +151,7 @@
       <div class="field">
         <label for="quotiteEmp1">Quotité assurée — emprunteur 1</label>
         <div class="input-wrap">
-          <input type="number" id="quotiteEmp1" value="50" min="0" max="100" step="5">
+          <input type="number" id="quotiteEmp1" value="100" min="0" max="100" step="5">
           <span class="unit">%</span>
         </div>
       </div>
@@ -165,7 +165,7 @@
       <div class="field">
         <label for="quotiteEmp2">Quotité assurée — emprunteur 2</label>
         <div class="input-wrap">
-          <input type="number" id="quotiteEmp2" value="50" min="0" max="100" step="5">
+          <input type="number" id="quotiteEmp2" value="100" min="0" max="100" step="5">
           <span class="unit">%</span>
         </div>
       </div>
@@ -266,8 +266,8 @@
       <div class="field">
         <label for="dureeCap">Durée souhaitée</label>
         <div class="input-wrap">
-          <input type="number" id="dureeCap" value="20" min="1" step="1">
-          <span class="unit">ans</span>
+          <input type="number" id="dureeCap" value="240" min="1" step="1">
+          <span class="unit">mois</span>
         </div>
       </div>
       <div class="field">
@@ -288,7 +288,7 @@
       <div class="field">
         <label for="quotiteCapEmp1">Quotité assurée — emprunteur 1</label>
         <div class="input-wrap">
-          <input type="number" id="quotiteCapEmp1" value="50" min="0" max="100" step="5">
+          <input type="number" id="quotiteCapEmp1" value="100" min="0" max="100" step="5">
           <span class="unit">%</span>
         </div>
       </div>
@@ -302,7 +302,7 @@
       <div class="field">
         <label for="quotiteCapEmp2">Quotité assurée — emprunteur 2</label>
         <div class="input-wrap">
-          <input type="number" id="quotiteCapEmp2" value="50" min="0" max="100" step="5">
+          <input type="number" id="quotiteCapEmp2" value="100" min="0" max="100" step="5">
           <span class="unit">%</span>
         </div>
       </div>
@@ -391,8 +391,8 @@
       <div class="field">
         <label for="memDuree">Durée</label>
         <div class="input-wrap">
-          <input type="number" id="memDuree" value="20" min="1" step="1">
-          <span class="unit">ans</span>
+          <input type="number" id="memDuree" value="240" min="1" step="1">
+          <span class="unit">mois</span>
         </div>
       </div>
       <div class="field">
@@ -413,7 +413,7 @@
       <div class="field">
         <label for="memQuotiteEmp1">Quotité assurée — emprunteur 1</label>
         <div class="input-wrap">
-          <input type="number" id="memQuotiteEmp1" value="50" min="0" max="100" step="5">
+          <input type="number" id="memQuotiteEmp1" value="100" min="0" max="100" step="5">
           <span class="unit">%</span>
         </div>
       </div>
@@ -427,7 +427,7 @@
       <div class="field">
         <label for="memQuotiteEmp2">Quotité assurée — emprunteur 2</label>
         <div class="input-wrap">
-          <input type="number" id="memQuotiteEmp2" value="50" min="0" max="100" step="5">
+          <input type="number" id="memQuotiteEmp2" value="100" min="0" max="100" step="5">
           <span class="unit">%</span>
         </div>
       </div>
@@ -519,7 +519,7 @@
     <div class="grid second-emprunteur-fields" id="liSecondEmprunteurFields">
       <div class="field">
         <label for="liQuotiteEmp1">Quotité assurée — emprunteur 1</label>
-        <div class="input-wrap"><input type="number" id="liQuotiteEmp1" value="50" min="0" max="100" step="5"><span class="unit">%</span></div>
+        <div class="input-wrap"><input type="number" id="liQuotiteEmp1" value="100" min="0" max="100" step="5"><span class="unit">%</span></div>
       </div>
       <div class="field">
         <label for="liAssuranceEmp2">Taux assurance emprunteur 2</label>
@@ -527,9 +527,24 @@
       </div>
       <div class="field">
         <label for="liQuotiteEmp2">Quotité assurée — emprunteur 2</label>
-        <div class="input-wrap"><input type="number" id="liQuotiteEmp2" value="50" min="0" max="100" step="5"><span class="unit">%</span></div>
+        <div class="input-wrap"><input type="number" id="liQuotiteEmp2" value="100" min="0" max="100" step="5"><span class="unit">%</span></div>
       </div>
     </div>
+
+    <div class="grid" style="margin-top:18px;">
+      <div class="field">
+        <label for="liFranchiseDuree">Franchise sur le prêt principal</label>
+        <div class="input-wrap"><input type="number" id="liFranchiseDuree" value="0" min="0" step="1"><span class="unit">mois</span></div>
+      </div>
+      <div class="field">
+        <label>Type de franchise <span class="ref">(sans effet si durée = 0)</span></label>
+        <div class="segment" role="group" aria-label="Type de franchise — prêt principal">
+          <button type="button" id="liFranchisePartielBtn" data-type="partiel" aria-pressed="true">Partielle</button>
+          <button type="button" id="liFranchiseTotalBtn" data-type="total" aria-pressed="false">Totale</button>
+        </div>
+      </div>
+    </div>
+    <p class="ref" style="margin-top:8px;">Pendant la franchise, le prêt principal n'est pas encore lissé à la mensualité globale cible : franchise <strong>partielle</strong>, les intérêts sont payés chaque mois (capital inchangé) ; franchise <strong>totale</strong>, rien n'est payé et les intérêts s'ajoutent au capital à amortir ensuite. L'assurance reste due dans tous les cas.</p>
 
     <div class="divider"></div>
 
@@ -573,7 +588,7 @@
         <div class="grid second-emprunteur-fields" id="liSec1SecondEmprunteurFields">
           <div class="field">
             <label for="liSec1QuotiteEmp1">Quotité assurée — emprunteur 1</label>
-            <div class="input-wrap"><input type="number" id="liSec1QuotiteEmp1" value="50" min="0" max="100" step="5"><span class="unit">%</span></div>
+            <div class="input-wrap"><input type="number" id="liSec1QuotiteEmp1" value="100" min="0" max="100" step="5"><span class="unit">%</span></div>
           </div>
           <div class="field">
             <label for="liSec1AssuranceEmp2">Taux assurance emprunteur 2</label>
@@ -581,7 +596,7 @@
           </div>
           <div class="field">
             <label for="liSec1QuotiteEmp2">Quotité assurée — emprunteur 2</label>
-            <div class="input-wrap"><input type="number" id="liSec1QuotiteEmp2" value="50" min="0" max="100" step="5"><span class="unit">%</span></div>
+            <div class="input-wrap"><input type="number" id="liSec1QuotiteEmp2" value="100" min="0" max="100" step="5"><span class="unit">%</span></div>
           </div>
         </div>
       </div>
@@ -624,7 +639,7 @@
         <div class="grid second-emprunteur-fields" id="liSec2SecondEmprunteurFields">
           <div class="field">
             <label for="liSec2QuotiteEmp1">Quotité assurée — emprunteur 1</label>
-            <div class="input-wrap"><input type="number" id="liSec2QuotiteEmp1" value="50" min="0" max="100" step="5"><span class="unit">%</span></div>
+            <div class="input-wrap"><input type="number" id="liSec2QuotiteEmp1" value="100" min="0" max="100" step="5"><span class="unit">%</span></div>
           </div>
           <div class="field">
             <label for="liSec2AssuranceEmp2">Taux assurance emprunteur 2</label>
@@ -632,7 +647,7 @@
           </div>
           <div class="field">
             <label for="liSec2QuotiteEmp2">Quotité assurée — emprunteur 2</label>
-            <div class="input-wrap"><input type="number" id="liSec2QuotiteEmp2" value="50" min="0" max="100" step="5"><span class="unit">%</span></div>
+            <div class="input-wrap"><input type="number" id="liSec2QuotiteEmp2" value="100" min="0" max="100" step="5"><span class="unit">%</span></div>
           </div>
         </div>
       </div>
@@ -675,7 +690,7 @@
         <div class="grid second-emprunteur-fields" id="liSec3SecondEmprunteurFields">
           <div class="field">
             <label for="liSec3QuotiteEmp1">Quotité assurée — emprunteur 1</label>
-            <div class="input-wrap"><input type="number" id="liSec3QuotiteEmp1" value="50" min="0" max="100" step="5"><span class="unit">%</span></div>
+            <div class="input-wrap"><input type="number" id="liSec3QuotiteEmp1" value="100" min="0" max="100" step="5"><span class="unit">%</span></div>
           </div>
           <div class="field">
             <label for="liSec3AssuranceEmp2">Taux assurance emprunteur 2</label>
@@ -683,7 +698,7 @@
           </div>
           <div class="field">
             <label for="liSec3QuotiteEmp2">Quotité assurée — emprunteur 2</label>
-            <div class="input-wrap"><input type="number" id="liSec3QuotiteEmp2" value="50" min="0" max="100" step="5"><span class="unit">%</span></div>
+            <div class="input-wrap"><input type="number" id="liSec3QuotiteEmp2" value="100" min="0" max="100" step="5"><span class="unit">%</span></div>
           </div>
         </div>
       </div>
@@ -721,6 +736,10 @@
         <div class="stat">
           <span class="label">nombre de phases</span>
           <span class="value" id="liNbPaliers">—</span>
+        </div>
+        <div class="stat">
+          <span class="label">mensualité pendant la franchise <span class="ref">(1er mois)</span></span>
+          <span class="value" id="liFranchiseMensualite">—</span>
         </div>
       </div>
     </div>
@@ -796,8 +815,8 @@ function tauxAssuranceEffectif(tauxEmp1, secondActif, quotite1, tauxEmp2, quotit
   return tauxEmp1 * (quotite1/100) + tauxEmp2 * (quotite2/100);
 }
 
-function calculerPret(montant, tauxAnnuel, dureeAns, tauxAssuranceAnnuel){
-  const n = Math.max(1, Math.round(dureeAns * 12));
+function calculerPret(montant, tauxAnnuel, dureeMois, tauxAssuranceAnnuel){
+  const n = Math.max(1, Math.round(dureeMois));
   const r = (tauxAnnuel/100)/12;
   let mensualiteHorsAssurance;
   if(r === 0){
@@ -886,12 +905,12 @@ document.getElementById('calculerPretBtn').addEventListener('click', majSimulate
 function reinitialiserSimulateur(){
   elMontant.value = 250000;
   elTaux.value = 3.5;
-  elDuree.value = 20;
+  elDuree.value = 240;
   elSecondEmprunteur.checked = false;
   elAssuranceEmp1.value = 0.3;
-  elQuotiteEmp1.value = 50;
+  elQuotiteEmp1.value = 100;
   elAssuranceEmp2.value = 0.3;
-  elQuotiteEmp2.value = 50;
+  elQuotiteEmp2.value = 100;
   document.getElementById('secondEmprunteurFields').classList.remove('open');
 
   document.getElementById('mensualiteTotale').innerHTML = '0 € <span>/ mois</span>';
@@ -951,7 +970,7 @@ function majCapacite(){
   const quotite2 = parseFloat(elQuotiteCapEmp2.value) || 0;
   const assurance = tauxAssuranceEffectif(tauxEmp1, secondActif, quotite1, tauxEmp2, quotite2);
 
-  const n = Math.max(1, Math.round(duree*12));
+  const n = Math.max(1, Math.round(duree));
   const r = (taux/100)/12;
 
   const mensualiteMax = Math.max(0, revenus*0.35 - charges);
@@ -997,12 +1016,12 @@ function reinitialiserCapacite(){
   elRevenus.value = 3500;
   elCharges.value = 300;
   elTauxCap.value = 3.5;
-  elDureeCap.value = 20;
+  elDureeCap.value = 240;
   elSecondEmprunteurCap.checked = false;
   elAssuranceCapEmp1.value = 0.3;
-  elQuotiteCapEmp1.value = 50;
+  elQuotiteCapEmp1.value = 100;
   elAssuranceCapEmp2.value = 0.3;
-  elQuotiteCapEmp2.value = 50;
+  elQuotiteCapEmp2.value = 100;
   document.getElementById('secondEmprunteurCapFields').classList.remove('open');
 
   document.getElementById('capaciteEmprunt').textContent = '0 €';
@@ -1050,8 +1069,8 @@ document.getElementById('simulerCeButton').addEventListener('click', function(){
 // financier que le simulateur de prêt (assurance recalculée chaque mois sur le capital
 // restant dû, et non sur le capital initial).
 
-function calculerMontantEmpruntable(mensualite, tauxAnnuel, dureeAns, tauxAssuranceAnnuel){
-  const n = Math.max(1, Math.round(dureeAns * 12));
+function calculerMontantEmpruntable(mensualite, tauxAnnuel, dureeMois, tauxAssuranceAnnuel){
+  const n = Math.max(1, Math.round(dureeMois));
   const r = (tauxAnnuel/100)/12;          // taux d'intérêt mensuel
   const a = (tauxAssuranceAnnuel/100)/12; // taux d'assurance mensuel (sur capital restant dû)
   const c = r + a;                        // taux mensuel combiné (intérêts + assurance)
@@ -1174,12 +1193,12 @@ function majMontantEmpruntable(){
 function reinitialiserMontantEmpruntable(){
   document.getElementById('memMensualite').value = 1200;
   document.getElementById('memTaux').value = 3.2;
-  document.getElementById('memDuree').value = '20';
+  document.getElementById('memDuree').value = '240';
   document.getElementById('memAssuranceEmp1').value = 0.2;
   document.getElementById('memSecondEmprunteur').checked = false;
-  document.getElementById('memQuotiteEmp1').value = 50;
+  document.getElementById('memQuotiteEmp1').value = 100;
   document.getElementById('memAssuranceEmp2').value = 0.2;
-  document.getElementById('memQuotiteEmp2').value = 50;
+  document.getElementById('memQuotiteEmp2').value = 100;
   document.getElementById('memSecondEmprunteurFields').classList.remove('open');
 
   document.getElementById('memNoticeErreur').classList.remove('show');
@@ -1265,14 +1284,25 @@ function liSimulerPretSecondaire(P, tauxAnnuel, D, A, tauxAssurance, typeDiffere
   return rows;
 }
 
-// Simule le prêt principal mois par mois pour une mensualité globale G donnée :
-// chaque mois, le remboursement de capital = G moins tout le reste (prêts
-// secondaires du mois, intérêts et assurance du principal ce mois-là).
-function liSimulerPrincipalPourG(G, M, tauxAnnuel, tauxAssurance, N, secondairesRows){
+// Simule le prêt principal mois par mois pour une mensualité globale G donnée.
+// Pendant la franchise (mois 1 à F), le prêt principal ne suit pas encore la
+// cible G : franchise partielle, les intérêts sont payés (capital inchangé) ;
+// franchise totale, rien n'est payé et les intérêts s'ajoutent au capital.
+// À partir du mois F+1, chaque mois, le remboursement de capital = G moins
+// tout le reste (prêts secondaires du mois, intérêts et assurance du principal).
+function liSimulerPrincipalPourG(G, M, tauxAnnuel, tauxAssurance, N, secondairesRows, F, typeFranchise){
   const r = (tauxAnnuel/100)/12;
   const rows = [];
   let capitalRestant = M;
-  for (let mois = 1; mois <= N; mois++){
+
+  for (let mois = 1; mois <= F; mois++){
+    let interet = r === 0 ? 0 : capitalRestant * r;
+    const assurance = capitalRestant * (tauxAssurance/100)/12;
+    if (typeFranchise === 'total'){ capitalRestant += interet; interet = 0; }
+    rows.push({ mois, capitalRembourse: 0, interet, assurance, mensualite: interet+assurance, capitalRestant });
+  }
+
+  for (let mois = F+1; mois <= N; mois++){
     const interet = r === 0 ? 0 : capitalRestant * r;
     const assurance = capitalRestant * (tauxAssurance/100)/12;
     let secondaireMois = 0;
@@ -1282,15 +1312,27 @@ function liSimulerPrincipalPourG(G, M, tauxAnnuel, tauxAssurance, N, secondaires
     capitalRestant = capitalRestant - capitalRembourse;
     rows.push({ mois, capitalRembourse, interet, assurance, mensualite: capitalRembourse+interet+assurance, capitalRestant, secondaireMois });
   }
+
+  // Complète "secondaireMois" pour les mois de franchise aussi (utile à l'affichage global).
+  for (let i = 0; i < F; i++){
+    let secondaireMois = 0;
+    secondairesRows.forEach(sr => { secondaireMois += sr[i].mensualite; });
+    rows[i].secondaireMois = secondaireMois;
+  }
   return rows;
 }
 
-function liCapitalFinalPourG(G, M, tauxAnnuel, tauxAssurance, N, secondairesRows){
+function liCapitalFinalPourG(G, M, tauxAnnuel, tauxAssurance, N, secondairesRows, F, typeFranchise){
   // Identique à liSimulerPrincipalPourG mais sans forcer le dernier mois,
   // pour obtenir la vraie valeur du capital final utilisée par la dichotomie.
   const r = (tauxAnnuel/100)/12;
   let capitalRestant = M;
-  for (let mois = 1; mois <= N; mois++){
+  for (let mois = 1; mois <= F; mois++){
+    const interet = r === 0 ? 0 : capitalRestant * r;
+    if (typeFranchise === 'total'){ capitalRestant += interet; }
+    // en franchise "partielle" : intérêts payés à part, capital inchangé.
+  }
+  for (let mois = F+1; mois <= N; mois++){
     const interet = r === 0 ? 0 : capitalRestant * r;
     const assurance = capitalRestant * (tauxAssurance/100)/12;
     let secondaireMois = 0;
@@ -1305,15 +1347,15 @@ function liCapitalFinalPourG(G, M, tauxAnnuel, tauxAssurance, N, secondairesRows
 // grand, plus le capital s'amortit vite), donc une unique racine existe si
 // l'encadrement est correct. 80 itérations donnent une précision largement
 // suffisante bien au-delà du centime.
-function liChercherG(M, tauxAnnuel, tauxAssurance, N, secondairesRows){
+function liChercherG(M, tauxAnnuel, tauxAssurance, N, secondairesRows, F, typeFranchise){
   let bas = 0;
   let haut = liMensualitePourAmortir(M, tauxAnnuel, N) * 6 + 5000;
-  const capBas = liCapitalFinalPourG(bas, M, tauxAnnuel, tauxAssurance, N, secondairesRows);
-  const capHaut = liCapitalFinalPourG(haut, M, tauxAnnuel, tauxAssurance, N, secondairesRows);
+  const capBas = liCapitalFinalPourG(bas, M, tauxAnnuel, tauxAssurance, N, secondairesRows, F, typeFranchise);
+  const capHaut = liCapitalFinalPourG(haut, M, tauxAnnuel, tauxAssurance, N, secondairesRows, F, typeFranchise);
   if (!(capBas > 0 && capHaut < 0)) return null; // pas de racine dans l'encadrement : lissage impossible
   for (let i = 0; i < 80; i++){
     const mid = (bas+haut)/2;
-    const cap = liCapitalFinalPourG(mid, M, tauxAnnuel, tauxAssurance, N, secondairesRows);
+    const cap = liCapitalFinalPourG(mid, M, tauxAnnuel, tauxAssurance, N, secondairesRows, F, typeFranchise);
     if (cap > 0) bas = mid; else haut = mid;
   }
   return (bas+haut)/2;
@@ -1347,6 +1389,18 @@ function liLireAssuranceEffective(prefixe){
 
 // ---------- gestion des blocs de prêts secondaires répétables ----------
 const liTypeDiffere = { 1: 'partiel', 2: 'partiel', 3: 'partiel' };
+let liTypeFranchisePrincipal = 'partiel';
+
+document.getElementById('liFranchisePartielBtn').addEventListener('click', function(){
+  liTypeFranchisePrincipal = 'partiel';
+  this.setAttribute('aria-pressed', 'true');
+  document.getElementById('liFranchiseTotalBtn').setAttribute('aria-pressed', 'false');
+});
+document.getElementById('liFranchiseTotalBtn').addEventListener('click', function(){
+  liTypeFranchisePrincipal = 'total';
+  this.setAttribute('aria-pressed', 'true');
+  document.getElementById('liFranchisePartielBtn').setAttribute('aria-pressed', 'false');
+});
 
 document.querySelectorAll('.li-differe-btn').forEach(btn => {
   btn.addEventListener('click', function(){
@@ -1396,6 +1450,8 @@ function calculerLissage(){
   const tauxAnnuel = parseFloat(document.getElementById('liTaux').value) || 0;
   const N = Math.min(300, Math.max(1, Math.round(parseFloat(document.getElementById('liDureeMois').value) || 0)));
   const tauxAssurancePrincipal = liLireAssuranceEffective('li');
+  const F = Math.max(0, Math.round(parseFloat(document.getElementById('liFranchiseDuree').value) || 0));
+  const typeFranchise = liTypeFranchisePrincipal;
 
   const prets = [1,2,3].map(liLireSecondaire).filter(p => p.montant > 0);
 
@@ -1409,6 +1465,7 @@ function calculerLissage(){
   const erreurs = [];
   if (M <= 0) erreurs.push("Le montant du prêt principal doit être positif.");
   if (tauxAnnuel < 0) erreurs.push("Le taux du prêt principal doit être positif ou nul.");
+  if (F >= N) erreurs.push("La franchise du prêt principal doit être strictement inférieure à la durée totale (il doit rester au moins un mois à lisser).");
   prets.forEach((p, i) => {
     if (p.debut > N) erreurs.push(`L'échéance de début d'amortissement du prêt secondaire ${i+1} doit être inférieure ou égale à la durée totale du prêt principal.`);
   });
@@ -1421,40 +1478,56 @@ function calculerLissage(){
 
   const secondairesRows = prets.map(p => liSimulerPretSecondaire(p.montant, p.taux, p.debut, p.duree, p.tauxAssurance, p.typeDiffere, N));
 
-  const Gbrut = liChercherG(M, tauxAnnuel, tauxAssurancePrincipal, N, secondairesRows);
+  const Gbrut = liChercherG(M, tauxAnnuel, tauxAssurancePrincipal, N, secondairesRows, F, typeFranchise);
   if (Gbrut === null){
     noticeImpossible.classList.add('show');
     document.getElementById('liEcart').innerHTML = '— <span>mensualité globale, fixe sur toute la durée</span>';
     document.getElementById('liMax').textContent = '—';
     document.getElementById('liMin').textContent = '—';
     document.getElementById('liNbPaliers').textContent = '—';
+    document.getElementById('liFranchiseMensualite').textContent = '—';
     document.getElementById('liRecapBody').innerHTML = '';
     document.getElementById('liAmortBody').innerHTML = '';
     return;
   }
   const G = liRound2(Gbrut);
 
-  const principalRows = liSimulerPrincipalPourG(G, M, tauxAnnuel, tauxAssurancePrincipal, N, secondairesRows);
+  const principalRows = liSimulerPrincipalPourG(G, M, tauxAnnuel, tauxAssurancePrincipal, N, secondairesRows, F, typeFranchise);
 
+  // L'écart résiduel ne porte que sur la phase lissée (après la franchise) :
+  // pendant la franchise, la mensualité globale est délibérément différente de G,
+  // ce n'est pas un défaut de lissage.
   let maxG = -Infinity, minG = Infinity;
-  principalRows.forEach((row, i) => {
+  principalRows.slice(F).forEach(row => {
     const global = row.mensualite + row.secondaireMois;
     if (global > maxG) maxG = global;
     if (global < minG) minG = global;
   });
-  const ecartResiduel = maxG - minG; // ne provient que de l'arrondi du tout dernier mois
+  const ecartResiduel = maxG - minG;
 
   const negatif = principalRows.some(r => r.capitalRembourse < -0.005);
   if (negatif) noticeNegatif.classList.add('show');
 
-  document.getElementById('liEcart').innerHTML = formatEuro2(G) + ' <span>mensualité globale, fixe sur toute la durée</span>';
+  const labelG = F > 0
+    ? 'mensualité globale après la franchise, fixe sur le reste de la durée'
+    : 'mensualité globale, fixe sur toute la durée';
+  document.getElementById('liEcart').innerHTML = formatEuro2(G) + ` <span>${labelG}</span>`;
   document.getElementById('liMax').textContent = formatEuro2(ecartResiduel);
   document.getElementById('liMin').textContent = N + ' mois';
 
-  // Phases = segments où la composition des prêts secondaires ne change pas
+  if (F > 0){
+    const globalFranchise = principalRows[0].mensualite + principalRows[0].secondaireMois;
+    document.getElementById('liFranchiseMensualite').textContent = formatEuro2(globalFranchise);
+  } else {
+    document.getElementById('liFranchiseMensualite').textContent = '—';
+  }
+
+  // Phases = segments où la composition des prêts secondaires ne change pas,
+  // plus la frontière de la franchise du prêt principal si elle existe
   // (utilisées uniquement pour la lecture du tableau récapitulatif ci-dessous ;
-  // la mensualité globale, elle, ne change jamais).
+  // la mensualité globale de la phase lissée, elle, ne change jamais).
   const points = new Set([1, N+1]);
+  if (F > 0) points.add(Math.min(F+1, N+1));
   prets.forEach(p => {
     if (p.debut > 1) points.add(Math.min(p.debut, N+1));
     points.add(Math.min(p.debut + p.duree, N+1));
@@ -1471,9 +1544,11 @@ function calculerLissage(){
   recapBody.innerHTML = phases.map((p, i) => {
     const row = principalRows[p.debut - 1];
     const global = row.mensualite + row.secondaireMois;
+    const estFranchise = p.debut <= F;
+    const label = estFranchise ? `Phase ${i+1} (franchise)` : `Phase ${i+1}`;
     return `
       <tr>
-        <td>Phase ${i+1}</td>
+        <td>${label}</td>
         <td>${p.debut} à ${p.fin}</td>
         <td>${formatEuro2(row.capitalRembourse)}</td>
         <td>${formatEuro2(row.assurance)}</td>
@@ -1510,10 +1585,15 @@ function reinitialiserLissage(){
   document.getElementById('liDureeMois').value = 300;
   document.getElementById('liAssuranceEmp1').value = 0.3;
   document.getElementById('liSecondEmprunteur').checked = false;
-  document.getElementById('liQuotiteEmp1').value = 50;
+  document.getElementById('liQuotiteEmp1').value = 100;
   document.getElementById('liAssuranceEmp2').value = 0.3;
-  document.getElementById('liQuotiteEmp2').value = 50;
+  document.getElementById('liQuotiteEmp2').value = 100;
   document.getElementById('liSecondEmprunteurFields').classList.remove('open');
+
+  document.getElementById('liFranchiseDuree').value = 0;
+  liTypeFranchisePrincipal = 'partiel';
+  document.getElementById('liFranchisePartielBtn').setAttribute('aria-pressed', 'true');
+  document.getElementById('liFranchiseTotalBtn').setAttribute('aria-pressed', 'false');
 
   const defauts = {
     1: { montant: 40000, taux: 0,   debut: 120, duree: 60, assurance: 0.3 },
@@ -1529,9 +1609,9 @@ function reinitialiserLissage(){
     document.getElementById(prefixe+'Duree').value = d.duree;
     document.getElementById(prefixe+'AssuranceEmp1').value = d.assurance;
     document.getElementById(prefixe+'SecondEmprunteur').checked = false;
-    document.getElementById(prefixe+'QuotiteEmp1').value = 50;
+    document.getElementById(prefixe+'QuotiteEmp1').value = 100;
     document.getElementById(prefixe+'AssuranceEmp2').value = d.assurance;
-    document.getElementById(prefixe+'QuotiteEmp2').value = 50;
+    document.getElementById(prefixe+'QuotiteEmp2').value = 100;
     document.getElementById(prefixe+'SecondEmprunteurFields').classList.remove('open');
     liTypeDiffere[idx] = 'partiel';
     document.querySelectorAll(`.li-differe-btn[data-sec="${idx}"]`).forEach(b => {
@@ -1551,6 +1631,7 @@ function reinitialiserLissage(){
   document.getElementById('liMax').textContent = '0 €';
   document.getElementById('liMin').textContent = '—';
   document.getElementById('liNbPaliers').textContent = '—';
+  document.getElementById('liFranchiseMensualite').textContent = '—';
   document.getElementById('liRecapBody').innerHTML = '';
   document.getElementById('liAmortBody').innerHTML = '';
 
