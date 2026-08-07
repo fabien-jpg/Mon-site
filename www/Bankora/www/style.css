@@ -1,0 +1,857 @@
+/* =========================================================
+   Facilpro — feuille de styles partagée
+   (crédit, investissement locatif, transmission, fiscalité, épargne)
+
+   Direction : outil pro dense et rapide à scanner, inspiré des
+   marketplaces de services (fond clair, cartes blanches, une seule
+   couleur de signature — bleu marine — réservée aux actions et aux
+   états actifs). Vert et rouge restent dédiés aux résultats
+   positifs / négatifs, jamais à la marque.
+   Les noms de variables historiques (--brass, --rust...) sont
+   conservés pour ne pas casser le CSS existant ; seules leurs
+   valeurs changent.
+   ========================================================= */
+
+/* ---------- Variables (tokens) ---------- */
+:root{
+  /* Texte & fond */
+  --ink:#1B2340;          /* texte principal, panneaux sombres */
+  --ink-soft:#3B4570;     /* variante plus douce de l'encre */
+  --bg:#F6F7FB;           /* fond de page (gris-bleu très clair) */
+  --block-bg:#1B2340;     /* fond de chaque bloc simulateur (reprend --ink) */
+  --surface:#FFFFFF;      /* carte (blanc, jamais de bloc de couleur plein) */
+  --surface-alt:#EEF0FA;  /* zébrage de tableau, pistes de jauge */
+  --border:rgba(30,42,94,.14);
+  --border-light:rgba(255,255,255,.22); /* filets sur fond sombre */
+  --muted:#5B6478;        /* texte secondaire (slate bleuté) */
+
+  /* Signature : bleu marine */
+  --primary:#1E2A5E;          /* alias legacy → marine (CTA, accents) */
+  --primary-dark:#12183A;     /* alias legacy → marine foncé (hover) */
+  --brass:#1E2A5E;
+  --brass-light:#93A5E8;
+  --brass-deep:#12183A;
+  --brass-soft:#E7EAFC;
+
+  /* Fonctionnel */
+  --accent:#12183A;            /* alias legacy → marine foncé (liens, survols) */
+  --accent-soft:#E7EAFC;       /* alias legacy → marine pâle */
+  --forest:#2F7D5B;            /* positif / exonération */
+  --forest-soft:#E5F3ED;
+  --rust:#C0392B;              /* négatif / alerte */
+  --warn:#C0392B;               /* alias legacy → rouge alerte */
+  --warn-soft:#FBEAE7;
+  --ok:#2F7D5B;                 /* alias legacy → vert positif */
+}
+
+/* ---------- Base ---------- */
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Manrope',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  padding:0 0 72px;
+}
+::selection{background:var(--brass-soft);color:var(--ink);}
+a{color:inherit;}
+:focus-visible{outline:2px solid var(--brass);outline-offset:2px;}
+
+/* ---------- En-tête / masthead ---------- */
+header.top{
+  padding:56px 24px 36px;
+  max-width:960px;
+  margin:0 auto;
+  text-align:left;
+  border-bottom:1px solid var(--border);
+}
+header.top .logo{
+  height:256px;
+  width:auto;
+  display:block;
+  margin:0 auto 24px;
+}
+.eyebrow{
+  font-family:'Manrope',sans-serif;
+  font-size:11.5px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--brass);
+  font-weight:600;
+  margin:0 0 14px;
+}
+h1{
+  font-family:'Manrope',sans-serif;
+  font-weight:600;
+  font-size:clamp(28px,4.2vw,42px);
+  line-height:1.14;
+  margin:0 0 14px;
+  color:var(--ink);
+}
+header.top p{
+  color:var(--muted);
+  font-size:15.5px;
+  line-height:1.6;
+  max-width:580px;
+  margin:0;
+}
+
+/* ---------- Mise en page principale ---------- */
+main{
+  max-width:960px;
+  margin:0 auto;
+  padding:0 24px;
+  display:flex;
+  flex-direction:column;
+  gap:28px;
+}
+
+/* ---------- Navigation rapide (fil discret) ---------- */
+.quick-nav{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:4px;
+  margin-bottom:-6px;
+  font-family:'Manrope',sans-serif;
+  font-size:11.5px;
+}
+.quick-nav a{
+  color:var(--muted);
+  font-weight:600;
+  letter-spacing:.03em;
+  text-transform:uppercase;
+  text-decoration:none;
+  padding:8px 10px;
+  border-radius:3px;
+  transition:color .15s ease, background .15s ease;
+}
+.quick-nav a:not(:last-child)::after{
+  content:"/";
+  margin-left:14px;
+  color:var(--border);
+}
+.quick-nav-home{
+  color:var(--brass-deep) !important;
+}
+.quick-nav a:hover{
+  background:var(--surface);
+  color:var(--ink);
+}
+.quick-nav-home:hover{
+  color:var(--brass-deep) !important;
+  background:var(--brass-soft);
+}
+
+/* ---------- Cadre de bloc (mat encre) + carte ivoire ---------- */
+.block-frame{
+  padding:20px;
+  border-radius:4px;
+  background:var(--block-bg);
+  position:relative;
+}
+.block-frame::before{
+  content:"";
+  position:absolute;
+  inset:8px;
+  border:1px solid rgba(30,42,94,.35);
+  border-radius:2px;
+  pointer-events:none;
+}
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:34px;
+  position:relative;
+}
+.card-head{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:26px;
+  padding-bottom:16px;
+  border-bottom:1px solid var(--border);
+  flex-wrap:wrap;
+}
+.card-head h2{
+  font-family:'Manrope',sans-serif;
+  font-size:22px;
+  font-weight:600;
+  margin:0;
+  color:var(--ink);
+}
+.card-head .tag{
+  font-family:'Manrope',sans-serif;
+  font-size:10.5px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--brass-deep);
+  font-weight:600;
+}
+
+/* ---------- Grille de champs de saisie ---------- */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:20px 24px;
+}
+.field label{
+  display:block;
+  font-family:'Manrope',sans-serif;
+  font-size:11.5px;
+  letter-spacing:.02em;
+  font-weight:500;
+  color:var(--muted);
+  margin-bottom:7px;
+  transition:color .15s ease;
+}
+.field:focus-within label{color:var(--brass-deep);}
+.field .input-wrap{
+  position:relative;
+}
+.field input{
+  width:100%;
+  padding:5px 34px 7px 0;
+  border:none;
+  border-bottom:1.5px solid var(--border);
+  border-radius:0;
+  background:transparent;
+  font-family:'Manrope',sans-serif;
+  font-variant-numeric:tabular-nums;
+  font-size:16px;
+  font-weight:500;
+  color:var(--ink);
+  transition:border-color .15s ease;
+}
+.field input:focus{
+  outline:none;
+  border-bottom-color:var(--brass);
+}
+.field .unit{
+  position:absolute;
+  right:0;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:12.5px;
+  color:var(--muted);
+  font-family:'Manrope',sans-serif;
+  pointer-events:none;
+}
+
+/* ---------- Option "second emprunteur" / cases à cocher ---------- */
+.checkbox-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:20px;
+  font-size:13.5px;
+  font-weight:500;
+  color:var(--ink);
+  cursor:pointer;
+  user-select:none;
+}
+.checkbox-row input[type="checkbox"]{
+  width:16px;
+  height:16px;
+  accent-color:var(--brass);
+  cursor:pointer;
+}
+.second-emprunteur-fields{
+  display:none;
+  margin-top:18px;
+}
+.second-emprunteur-fields.open{
+  display:grid;
+}
+p.field-hint.second-emprunteur-fields{
+  display:none;
+  font-size:12.5px;
+  color:var(--muted);
+  margin:10px 0 0;
+  line-height:1.5;
+}
+p.field-hint.second-emprunteur-fields.open{
+  display:block;
+}
+
+/* ---------- Rangée de boutons + séparateur ---------- */
+.button-row{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.divider{
+  height:1px;
+  background:var(--border);
+  margin:28px 0;
+}
+
+/* ---------- Résultats mis en avant ---------- */
+.result-hero{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:flex-end;
+  gap:32px;
+  margin-bottom:22px;
+}
+.result-hero .big{
+  font-family:'Manrope',sans-serif;
+  font-weight:600;
+  font-size:clamp(34px,5.6vw,50px);
+  color:var(--ink);
+  line-height:1;
+}
+.result-hero .big span{
+  font-size:16px;
+  font-weight:500;
+  color:var(--muted);
+  font-family:'Manrope',sans-serif;
+}
+.result-hero .sub-stats{
+  display:flex;
+  gap:28px;
+  flex-wrap:wrap;
+}
+.stat{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.stat .label{
+  font-size:10.5px;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+  color:var(--muted);
+  font-family:'Manrope',sans-serif;
+}
+.stat .value{
+  font-family:'Manrope',sans-serif;
+  font-size:17px;
+  font-weight:600;
+  color:var(--ink);
+}
+
+/* ---------- Barre de composition (capital / intérêts / assurance) ---------- */
+.composition{
+  margin-top:26px;
+}
+.composition .bar{
+  display:flex;
+  width:100%;
+  height:10px;
+  border-radius:2px;
+  overflow:hidden;
+  background:var(--surface-alt);
+  border:1px solid var(--border);
+}
+.composition .seg{
+  height:100%;
+  transition:width .35s ease;
+}
+/* Couleurs + largeurs par défaut des segments (recalculées en JS après un calcul) */
+.seg-capital{background:var(--ink); width:60%;}
+.seg-interets{background:var(--brass); width:30%;}
+.seg-assurance{background:var(--brass-light); width:10%;}
+
+.composition .legend{
+  display:flex;
+  gap:22px;
+  margin-top:12px;
+  flex-wrap:wrap;
+}
+.composition .legend-item{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:12.5px;
+  color:var(--muted);
+}
+.legend-dot{
+  width:8px;height:8px;border-radius:1px;display:inline-block;
+}
+.legend-dot-capital{background:var(--ink);}
+.legend-dot-interets{background:var(--brass);}
+.legend-dot-assurance{background:var(--brass-light);}
+
+/* ---------- Boutons ---------- */
+.calc-btn{
+  margin-top:22px;
+  background:var(--brass);
+  border:1px solid var(--brass);
+  color:var(--surface);
+  font-family:'Manrope',sans-serif;
+  font-weight:600;
+  font-size:14px;
+  letter-spacing:.02em;
+  padding:13px 28px;
+  border-radius:3px;
+  cursor:pointer;
+  transition:background .2s ease, border-color .2s ease, transform .1s ease;
+}
+.calc-btn:hover{
+  background:var(--brass-light);
+  border-color:var(--brass-light);
+}
+.calc-btn:active{
+  transform:scale(.98);
+}
+.calc-btn.secondary{
+  margin-top:24px;
+  background:transparent;
+  color:var(--ink);
+  border:1px solid var(--border);
+}
+.calc-btn.secondary:hover{
+  border-color:var(--ink);
+  background:var(--surface-alt);
+}
+.toggle{
+  margin-top:24px;
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--muted);
+  font-family:'Manrope',sans-serif;
+  font-weight:600;
+  font-size:11.5px;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  padding:10px 18px;
+  border-radius:3px;
+  cursor:pointer;
+  transition:background .15s ease, border-color .15s ease, color .15s ease;
+}
+.toggle:hover{
+  border-color:var(--ink);
+  color:var(--ink);
+  background:var(--surface-alt);
+}
+
+/* ---------- Tableau d'amortissement ---------- */
+.table-wrap{
+  margin-top:20px;
+  max-height:360px;
+  overflow-y:auto;
+  border:1px solid var(--border);
+  border-radius:3px;
+  display:none;
+}
+.table-wrap.open{display:block;}
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-family:'Manrope',sans-serif;
+  font-size:12.5px;
+}
+thead th{
+  position:sticky;
+  top:0;
+  background:var(--surface);
+  color:var(--muted);
+  text-align:right;
+  padding:11px 14px;
+  font-weight:600;
+  font-size:10.5px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  border-bottom:1.5px solid var(--ink);
+}
+thead th:first-child, tbody td:first-child{text-align:left;}
+tbody td{
+  padding:9px 14px;
+  text-align:right;
+  border-bottom:1px solid var(--border);
+  color:var(--ink);
+  font-variant-numeric:tabular-nums;
+}
+tbody tr:nth-child(even){background:var(--surface-alt);}
+
+/* Utilitaires de cellule, réutilisés par les pages de référence (tableaux
+   à en-têtes explicites où seules certaines colonnes sont numériques) */
+.num{
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+.ref{
+  display:block;
+  font-size:11px;
+  color:var(--muted);
+  font-weight:400;
+}
+
+/* ---------- Jauges de taux d'endettement (capacité d'emprunt) ---------- */
+.gauge-caption{
+  font-size:11.5px;
+  color:var(--muted);
+  font-family:'Manrope',sans-serif;
+  margin:0 0 8px;
+}
+.gauge-wrap{
+  margin-top:8px;
+}
+.gauge-wrap-second{
+  margin-top:26px;
+}
+.gauge{
+  position:relative;
+  width:100%;
+  height:8px;
+  border-radius:1px;
+  background:var(--surface-alt);
+  border:1px solid var(--border);
+  overflow:visible;
+}
+.gauge-fill{
+  height:100%;
+  width:0%;
+  border-radius:1px;
+  background:var(--brass);
+  transition:width .3s ease, background .3s ease;
+}
+.gauge-fill.over{background:var(--rust);}
+.gauge-threshold{
+  position:absolute;
+  left:35%;
+  top:-4px;
+  bottom:-4px;
+  width:2px;
+  background:var(--ink);
+}
+.gauge-threshold::after{
+  content:'35%';
+  position:absolute;
+  top:-20px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:10.5px;
+  font-family:'Manrope',sans-serif;
+  color:var(--ink);
+  font-weight:600;
+}
+
+/* ---------- Messages d'alerte et encart pédagogique ---------- */
+.notice{
+  margin-top:16px;
+  padding:13px 16px;
+  border-radius:3px;
+  border-left:3px solid var(--rust);
+  font-size:13.5px;
+  line-height:1.5;
+  background:var(--warn-soft);
+  color:#5C2A1D;
+  display:none;
+}
+.notice.show{display:block;}
+
+.insight-box{
+  margin-top:24px;
+  padding:16px 18px;
+  border-radius:3px;
+  border-left:3px solid var(--brass);
+  background:var(--brass-soft);
+  display:none;
+}
+.insight-box.show{display:block;}
+.insight-box .insight-label{
+  font-family:'Manrope',sans-serif;
+  font-size:10.5px;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+  color:var(--brass-deep);
+  font-weight:600;
+  margin:0 0 6px;
+}
+.insight-box p{
+  margin:0;
+  font-size:14px;
+  line-height:1.55;
+  color:var(--ink);
+}
+
+/* ---------- Pied de page ---------- */
+footer{
+  max-width:960px;
+  margin:48px auto 0;
+  padding:24px 24px 0;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.65;
+  border-top:1px solid var(--border);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width:560px){
+  .card{padding:24px;}
+  .block-frame{padding:12px;}
+  .block-frame::before{inset:6px;}
+  .result-hero{gap:20px;}
+}
+
+/* ---------- En-tête de sous-section (titre + compteur) ---------- */
+.index-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:16px;
+  padding-bottom:14px;
+  margin-bottom:4px;
+  border-bottom:1px solid var(--border);
+}
+.index-head h2{
+  font-family:'Manrope',sans-serif;
+  font-weight:600;
+  font-size:20px;
+  margin:0;
+  color:var(--ink);
+}
+.index-head span{
+  font-family:'Manrope',sans-serif;
+  font-size:10.5px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+/* ---------- Pages de référence (sections numérotées, tableaux, pastilles) ---------- */
+.ref-section{margin-bottom:36px;}
+.ref-section:last-child{margin-bottom:0;}
+.ref-section-head{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:6px;
+}
+.ref-section-head h3{
+  font-family:'Manrope',sans-serif;
+  font-size:19px;
+  font-weight:600;
+  margin:0;
+  color:var(--ink);
+}
+.ref-section-head span{
+  font-family:'Manrope',sans-serif;
+  font-size:10.5px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--brass-deep);
+}
+.ref-section-note{
+  font-size:12.5px;
+  color:var(--muted);
+  margin:0 0 14px;
+  line-height:1.5;
+}
+
+.tbl-wrap{
+  overflow-x:auto;
+  border:1px solid var(--border);
+  border-radius:3px;
+}
+.tbl-wrap table{min-width:640px;}
+/* Certaines pages de référence ont plusieurs colonnes de texte (Conditions,
+   Fiscalité…) qui doivent rester alignées à gauche, contrairement au tableau
+   d'amortissement du site (majoritairement numérique) aligné à droite. */
+.tbl-wrap thead th, .tbl-wrap tbody td{text-align:left;}
+.tbl-wrap th.num, .tbl-wrap td.num{text-align:right;}
+.tbl-wrap td:first-child{
+  font-weight:600;
+  color:var(--ink);
+}
+
+.legende{
+  font-size:11.5px;
+  color:var(--muted);
+  margin-top:8px;
+  line-height:1.5;
+}
+.pastille{
+  display:inline-block;
+  padding:2px 8px;
+  border-radius:999px;
+  font-family:'Manrope',sans-serif;
+  font-size:10.5px;
+  font-weight:600;
+  letter-spacing:.02em;
+}
+.pastille-exo{background:var(--forest-soft);color:var(--forest);}
+.pastille-fisc{background:var(--brass-soft);color:var(--brass-deep);}
+.pastille-risque{background:var(--warn-soft);color:#8A3A22;}
+
+/* ---------- Bouton flottant "retour en haut" ---------- */
+.back-to-top{
+  position:fixed;
+  right:22px;
+  bottom:26px;
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:var(--ink);
+  color:var(--brass-light);
+  border:1px solid var(--brass);
+  font-size:17px;
+  line-height:1;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  visibility:hidden;
+  transform:translateY(10px);
+  transition:opacity .25s ease, transform .25s ease, visibility .25s, background .15s ease, color .15s ease;
+  box-shadow:0 10px 24px rgba(27,35,64,.3);
+  z-index:60;
+}
+.back-to-top.show{
+  opacity:1;
+  visibility:visible;
+  transform:translateY(0);
+}
+.back-to-top:hover{
+  background:var(--brass);
+  color:var(--ink);
+}
+@media (max-width:560px){
+  .back-to-top{right:14px;bottom:16px;width:40px;height:40px;}
+}
+
+/* =========================================================
+   Carte de service — composant partagé
+   Utilisé sur l'accueil (choix d'un outil) et dans le hub de
+   navigation des simulateurs (choix d'un sous-simulateur).
+   Fond clair uniforme, icône en badge, chips discrètes.
+   ========================================================= */
+.card-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
+}
+.service-card{
+  display:block;
+  text-decoration:none;
+  color:inherit;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:26px 24px;
+  position:relative;
+  cursor:pointer;
+  transition:transform .25s cubic-bezier(.2,.7,.3,1), box-shadow .25s ease, border-color .25s ease;
+}
+.service-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 16px 36px -16px rgba(27,35,64,.28);
+  border-color:var(--brass);
+}
+.service-card__icon-badge{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:var(--brass-soft);
+  color:var(--brass);
+  margin-bottom:16px;
+}
+.service-card__title{
+  font-family:'Manrope',sans-serif;
+  font-size:19px;
+  font-weight:700;
+  color:var(--ink);
+  margin:0 0 8px;
+}
+.service-card__desc{
+  font-size:13.5px;
+  line-height:1.55;
+  color:var(--muted);
+  margin:0 0 16px;
+}
+.service-card__tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-bottom:18px;
+}
+.service-card__tags span{
+  font-family:'Manrope',sans-serif;
+  font-size:10.5px;
+  font-weight:600;
+  letter-spacing:.02em;
+  color:var(--brass-deep);
+  background:var(--brass-soft);
+  padding:4px 10px;
+  border-radius:20px;
+}
+.service-card__cta{
+  font-family:'Manrope',sans-serif;
+  font-size:12.5px;
+  font-weight:700;
+  letter-spacing:.02em;
+  color:var(--brass);
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.service-card__cta .arrow{display:inline-block;transition:transform .18s ease;}
+.service-card:hover .service-card__cta .arrow{transform:translateX(4px);}
+
+/* Carte non cliquable ("à venir") */
+.service-card.soon{cursor:default;border-style:dashed;}
+.service-card.soon:hover{transform:none;box-shadow:none;border-color:var(--border);}
+.service-card.soon .service-card__title,
+.service-card.soon .service-card__cta{color:var(--muted);}
+.service-card.soon .service-card__cta{font-style:italic;}
+
+/* ---------- Hub de navigation (accueil → carte → simulateur) ---------- */
+.is-hidden{display:none !important;}
+.sim-hub{margin-bottom:8px;}
+.sim-back-link{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-family:'Manrope',sans-serif;
+  font-size:11.5px;
+  font-weight:600;
+  letter-spacing:.03em;
+  text-transform:uppercase;
+  color:var(--muted);
+  text-decoration:none;
+  margin-bottom:18px;
+  transition:color .15s ease;
+}
+.sim-back-link:hover{color:var(--brass);}
+
+/* ---------- Navigation en puces (pages de référence multi-sections) ---------- */
+.chip-nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:-6px;
+}
+.chip-nav a{
+  font-family:'Manrope',sans-serif;
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:.02em;
+  text-decoration:none;
+  color:var(--brass-deep);
+  background:var(--brass-soft);
+  padding:7px 14px;
+  border-radius:20px;
+  transition:background .15s ease, color .15s ease;
+}
+.chip-nav a:hover{background:var(--brass);color:#fff;}
+.chip-nav a.chip-home{
+  background:transparent;
+  color:var(--muted);
+  border:1px solid var(--border);
+}
+.chip-nav a.chip-home:hover{
+  background:var(--surface-alt);
+  color:var(--ink);
+  border-color:var(--brass);
+}

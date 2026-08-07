@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Facilpro — Le copilote des conseillers en crédit, épargne, transmission et fiscalité</title>
+<link rel="icon" type="image/png" href="/img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* =========================================================
+   Styles spécifiques à la page d'accueil.
+   Le composant carte (.card-grid / .service-card) vit dans
+   style.css, partagé avec le hub de navigation du simulateur
+   de crédit. Ici : uniquement la ligne de repères et l'en-tête
+   du sommaire.
+   ========================================================= */
+.meta-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:0;
+  margin-top:22px;
+  font-family:'Manrope',sans-serif;
+  font-size:11.5px;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.meta-row span{
+  padding:0 14px 0 0;
+  margin-right:14px;
+  border-right:1px solid var(--border);
+}
+.meta-row span:last-child{border-right:0;}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <img class="logo" src="/img/logo.png" alt="Facilpro — Le copilote des conseillers en crédit, épargne, transmission et fiscalité">
+  <p class="eyebrow">Facilpro</p>
+  <h1>Le copilote des conseillers en crédit, épargne, transmission et fiscalité</h1>
+  <p>Facilpro rassemble des outils pensés pour vos missions du quotidien : monter un dossier de crédit, éclairer une stratégie d'épargne, préparer une transmission ou vérifier une fiscalité. Tout se calcule directement dans votre navigateur, sans compte ni saisie transmise à un serveur.</p>
+  <div class="meta-row">
+    <span>100 % gratuit</span>
+    <span>Aucune donnée envoyée</span>
+    <span>Chiffres à jour au 1ᵉʳ août 2026</span>
+  </div>
+</header>
+
+<main>
+
+  <div class="index-head">
+    <h2>Sommaire</h2>
+    <span>6 modules</span>
+  </div>
+
+  <div class="card-grid">
+
+    <a class="service-card" href="simulateurs.html">
+      <span class="service-card__icon-badge">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 L12 4 L20 12"/><path d="M6.5 10.5 V20 H17.5 V10.5"/></svg>
+      </span>
+      <p class="service-card__title">Crédit</p>
+      <p class="service-card__desc">Mensualité, coût total du crédit, capacité d'emprunt selon la règle des 35 % et montant empruntable à partir d'une mensualité connue.</p>
+      <div class="service-card__tags">
+        <span>Simulateur de prêt</span>
+        <span>Capacité d'emprunt</span>
+        <span>Montant empruntable</span>
+      </div>
+      <span class="service-card__cta">Ouvrir <span class="arrow">→</span></span>
+    </a>
+
+    <a class="service-card" href="rentabilite-locative.html">
+      <span class="service-card__icon-badge">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 L12 4 L20 12"/><path d="M6.5 10.5 V20 H17.5 V10.5"/><path d="M10 20 V15 H14 V20"/></svg>
+      </span>
+      <p class="service-card__title">Investissement locatif</p>
+      <p class="service-card__desc">Rentabilité brute et nette, cash-flow mensuel, financement et régime fiscal (micro-foncier, réel, LMNP) d'un projet locatif.</p>
+      <div class="service-card__tags">
+        <span>Simulateur simple</span>
+        <span>Simulateur avancé</span>
+        <span>Fiscalité LMNP</span>
+      </div>
+      <span class="service-card__cta">Ouvrir <span class="arrow">→</span></span>
+    </a>
+
+    <a class="service-card" href="fiscalite-transmission.html">
+      <span class="service-card__icon-badge">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1z"/><path d="M14 3.5V8h4"/><path d="M9 13h6M9 16.5h6"/></svg>
+      </span>
+      <p class="service-card__title">Transmission &amp; fiscalité</p>
+      <p class="service-card__desc">Calculateur de droits de donation et de succession, barème détaillé tranche par tranche, rappel fiscal des 15 ans, assurance-vie et démembrement.</p>
+      <div class="service-card__tags">
+        <span>Calculateur DMTG</span>
+        <span>Mémo fiscal complet</span>
+        <span>Assurance-vie</span>
+      </div>
+      <span class="service-card__cta">Ouvrir <span class="arrow">→</span></span>
+    </a>
+
+    <a class="service-card" href="epargne.html">
+      <span class="service-card__icon-badge">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.66 3.13 3 7 3s7-1.34 7-3V6"/><path d="M5 12v6c0 1.66 3.13 3 7 3s7-1.34 7-3v-6"/></svg>
+      </span>
+      <p class="service-card__title">Simulateur d'épargne</p>
+      <p class="service-card__desc">Versements initial et périodiques, capitalisation des intérêts et régime fiscal (livret réglementé, flat tax, assurance-vie, PEA).</p>
+      <div class="service-card__tags">
+        <span>Versements programmés</span>
+        <span>Flat tax &amp; barème</span>
+        <span>Assurance-vie &amp; PEA</span>
+      </div>
+      <span class="service-card__cta">Ouvrir <span class="arrow">→</span></span>
+    </a>
+
+    <a class="service-card" href="per.html">
+      <span class="service-card__icon-badge">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+      </span>
+      <p class="service-card__title">Épargne retraite (PER)</p>
+      <p class="service-card__desc">Économie d'impôt à l'entrée, puis comparatif sortie en capital ou en rente viagère, selon le statut, la déductibilité et la TMI.</p>
+      <div class="service-card__tags">
+        <span>Plafond salarié &amp; TNS</span>
+        <span>Capital vs rente</span>
+        <span>Déduit &amp; non déduit</span>
+      </div>
+      <span class="service-card__cta">Ouvrir <span class="arrow">→</span></span>
+    </a>
+
+    <a class="service-card" href="boite-a-outils-epargne.html">
+      <span class="service-card__icon-badge">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="1"/><path d="M4 9.5h16"/><path d="M8 13h3M8 16h5"/></svg>
+      </span>
+      <p class="service-card__title">La boîte à outils de l'épargne</p>
+      <p class="service-card__desc">Livret A, LDDS, LEP, CEL, PEL, compte-titres, PEA, assurance-vie, PER, PEAC : plafond, versement minimum, taux et fiscalité de chaque produit en un coup d'œil.</p>
+      <div class="service-card__tags">
+        <span>Page de référence</span>
+        <span>Livrets réglementés</span>
+        <span>PEA &amp; assurance-vie</span>
+      </div>
+      <span class="service-card__cta">Ouvrir <span class="arrow">→</span></span>
+    </a>
+
+  </div>
+
+</main>
+
+<footer>
+  Outils d'aide à la préparation de dossier, à destination des conseillers bancaires et courtiers. Ils ne constituent ni un conseil financier, ni un conseil fiscal. Les résultats affichés sont indicatifs.
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fiscalité des transmissions — Facilpro</title>
+<link rel="icon" type="image/png" href="/img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* =========================================================
+   Styles spécifiques au module « Fiscalité des transmissions »
+   Complètent style.css (mêmes variables, mêmes composants :
+   .block-frame, .card, .card-head, .field, .checkbox-row,
+   .calc-btn, .notice, .insight-box, tableaux…).
+   Rien ici ne redéfinit ce que style.css couvre déjà.
+   ========================================================= */
+
+/* ---------- Badge de confidentialité ---------- */
+.confidentialite{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-top:18px;
+  padding-top:14px;
+  border-top:1px solid var(--border);
+  font-family:'Manrope',sans-serif;
+  font-size:11.5px;
+  letter-spacing:.03em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.confidentialite::before{
+  content:"●";
+  color:var(--ok);
+  font-size:9px;
+}
+
+/* ---------- Mise en page du calculateur (colonne formulaire + résultat) ---------- */
+.calc{
+  display:grid;
+  grid-template-columns:minmax(0,320px) minmax(0,1fr);
+  gap:36px;
+}
+@media (max-width:820px){
+  .calc{grid-template-columns:1fr;}
+}
+
+/* Aide sous chaque label de champ */
+.field .aide{
+  display:block;
+  font-weight:400;
+  text-transform:none;
+  letter-spacing:0;
+  font-family:'Manrope',sans-serif;
+  font-size:11.5px;
+  color:var(--muted);
+  margin-top:4px;
+}
+
+/* Sélecteur "Lien de parenté" : même apparence que les champs texte (soulignés) */
+.field select{
+  width:100%;
+  padding:5px 12px 7px 0;
+  border:none;
+  border-bottom:1.5px solid var(--border);
+  border-radius:0;
+  font-family:'Manrope',sans-serif;
+  font-size:15px;
+  color:var(--ink);
+  background:transparent;
+  cursor:pointer;
+  transition:border-color .15s ease;
+}
+.field select:focus{
+  outline:none;
+  border-bottom-color:var(--brass);
+}
+
+/* ---------- Bascule Donation / Succession ---------- */
+.segment{
+  display:flex;
+  border:1px solid var(--ink);
+  border-radius:2px;
+  overflow:hidden;
+  margin-bottom:20px;
+}
+.segment button{
+  flex:1;
+  padding:10px 4px;
+  border:0;
+  background:var(--surface);
+  color:var(--muted);
+  font-family:'Manrope',sans-serif;
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:background .15s ease, color .15s ease;
+}
+.segment button + button{border-left:1px solid var(--ink);}
+.segment button[aria-pressed="true"]{
+  background:var(--ink);
+  color:#fff;
+}
+.segment button:hover:not([aria-pressed="true"]){
+  background:var(--brass-soft);
+  color:var(--ink);
+}
+.segment button:focus-visible{outline:2px solid var(--brass);outline-offset:-2px;}
+
+/* Bouton d'action principal, pleine largeur dans la colonne formulaire */
+#calculer{width:100%;text-align:center;}
+
+/* ---------- Zone de résultat ---------- */
+.resultat{min-width:0;} /* évite le débordement de la colonne dans la grille .calc */
+.vide{
+  border:1px dashed var(--border);
+  border-radius:2px;
+  padding:40px 18px;
+  text-align:center;
+  color:var(--muted);
+  font-size:13.5px;
+}
+
+.synthese{
+  display:flex;
+  flex-wrap:wrap;
+  gap:1px;
+  margin-bottom:24px;
+  background:var(--border);
+  border:1px solid var(--border);
+}
+.kpi{
+  flex:1 1 150px;
+  background:var(--surface);
+  padding:16px 18px;
+}
+.kpi span{
+  display:block;
+  font-family:'Manrope',sans-serif;
+  font-size:10.5px;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+  color:var(--muted);
+}
+.kpi strong{
+  display:block;
+  font-family:'Manrope',sans-serif;
+  font-weight:600;
+  font-size:26px;
+  margin-top:6px;
+  color:var(--ink);
+}
+.kpi.net strong{color:var(--ink);}
+.kpi.droits strong{color:var(--brass-deep);}
+
+/* Tableaux (mémo et résultat du calcul) : style.css définit déjà `table`
+   en général (police, bordures fusionnées) ; on complète pour l'en-tête,
+   les cellules, et les lignes spéciales, car ces tableaux n'utilisent
+   pas de <thead>/<tbody> explicites. */
+table{margin-bottom:20px;}
+caption{
+  text-align:left;
+  font-family:'Manrope',sans-serif;
+  font-size:10.5px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:var(--brass-deep);
+  font-weight:700;
+  padding-bottom:8px;
+}
+th{
+  background:transparent;
+  color:var(--muted);
+  text-align:left;
+  padding:8px 12px 10px;
+  font-weight:600;
+  font-size:10.5px;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  border-bottom:2px solid var(--ink);
+}
+td{
+  padding:8px 12px;
+  border-bottom:1px solid var(--border);
+  color:var(--ink);
+  vertical-align:top;
+}
+td.num, th.num{
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+tr:nth-child(even){background:var(--surface-alt);}
+tr.total td{
+  border-top:2px solid var(--brass);
+  border-bottom:0;
+  font-weight:700;
+  padding-top:10px;
+}
+tr.exo td{color:var(--ok);}
+td .ref{
+  display:block;
+  font-size:11px;
+  color:var(--muted);
+}
+
+/* Notes générées par le calculateur : mêmes traitements que .insight-box / .notice */
+.note{
+  margin-top:14px;
+  padding:13px 16px;
+  border-radius:2px;
+  border-left:3px solid var(--brass);
+  font-size:13px;
+  line-height:1.5;
+  background:var(--brass-soft);
+  color:var(--ink);
+}
+.note.alerte{
+  background:var(--warn-soft);
+  border-left-color:var(--warn);
+  color:#5C2530;
+}
+
+/* ---------- Mémo fiscal (accordéon) ---------- */
+details{border-bottom:1px solid var(--border);}
+details:last-of-type{border-bottom:0;}
+summary{
+  padding:16px 4px;
+  cursor:pointer;
+  font-weight:600;
+  font-size:16px;
+  font-family:'Manrope',sans-serif;
+  color:var(--ink);
+  list-style:none;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+summary::-webkit-details-marker{display:none;}
+summary::after{
+  content:"+";
+  color:var(--brass-deep);
+  font-weight:700;
+  font-family:'Manrope',sans-serif;
+  font-size:18px;
+}
+details[open] summary::after{content:"−";}
+summary:hover{color:var(--brass-deep);}
+summary:focus-visible{outline:2px solid var(--brass);outline-offset:-2px;}
+.memo-corps{padding:0 4px 24px;}
+.memo-corps p{margin:0 0 12px;font-size:13.5px;color:var(--ink);line-height:1.55;}
+.memo-corps ul{margin:0 0 12px;padding-left:20px;font-size:13.5px;color:var(--ink);line-height:1.55;}
+.memo-corps li{margin-bottom:6px;}
+
+/* ---------- Mentions légales (réutilise le <footer> global de style.css) ---------- */
+footer strong{color:var(--ink);}
+footer code{
+  font-family:'Manrope',sans-serif;
+  background:var(--surface-alt);
+  padding:1px 5px;
+  border-radius:4px;
+  font-size:11.5px;
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <p class="eyebrow">Module — fiscalité des transmissions</p>
+  <h1>Fiscalité des transmissions</h1>
+  <p>Droits de mutation à titre gratuit — donation et succession. Chiffres en vigueur au 1<sup>er</sup> août 2026.</p>
+  <div class="confidentialite">Calcul 100 % local — aucune donnée saisie ne quitte ce navigateur</div>
+</header>
+
+<main>
+  <nav class="quick-nav">
+    <a href="index.html" class="quick-nav-home">← Accueil</a>
+  </nav>
+
+
+  <!-- ============ CALCULATEUR ============ -->
+  <div class="block-frame">
+  <section class="card" id="calculateur-section">
+    <div class="card-head">
+      <h2>Calculateur de droits (DMTG)</h2>
+      <span class="tag">Donation &amp; succession</span>
+    </div>
+    <div class="calc">
+
+      <form id="form" autocomplete="off">
+        <div class="segment" role="group" aria-label="Nature de la transmission">
+          <button type="button" id="btnDon" aria-pressed="true">Donation</button>
+          <button type="button" id="btnSucc" aria-pressed="false">Succession</button>
+        </div>
+
+        <div class="field">
+          <label for="lien">Lien de parenté</label>
+          <div class="input-wrap"><select id="lien"></select></div>
+        </div>
+
+        <div class="field">
+          <label for="montant">Part nette revenant au bénéficiaire
+            <span class="aide">Après déduction du passif, avant abattements</span>
+          </label>
+          <div class="input-wrap"><input type="text" id="montant" inputmode="decimal" value="250 000"></div>
+        </div>
+
+        <div class="field" id="champRP" hidden>
+          <label for="valeurRP">Dont résidence principale du défunt
+            <span class="aide">Abattement de 20 %, automatique si le bien est aussi occupé au jour du décès par le conjoint, le partenaire de PACS ou un enfant mineur ou majeur protégé</span>
+          </label>
+          <div class="input-wrap"><input type="text" id="valeurRP" inputmode="decimal" value="0"></div>
+        </div>
+
+        <div class="field">
+          <label for="anterieures">Donations antérieures de moins de 15 ans
+            <span class="aide">Même donateur vers le même bénéficiaire</span>
+          </label>
+          <div class="input-wrap"><input type="text" id="anterieures" inputmode="decimal" value="0"></div>
+        </div>
+
+        <div class="field" id="champ790Abis">
+          <label for="don790Abis">Don affecté au logement (art. 790 A bis)
+            <span class="aide">Somme d'argent, logement neuf ou VEFA en résidence principale, ou rénovation énergétique. Plafond 100 000 € par donateur.</span>
+          </label>
+          <div class="input-wrap"><input type="text" id="don790Abis" inputmode="decimal" value="0"></div>
+        </div>
+
+        <div class="field" id="champ790G">
+          <label for="don790G">Don familial de sommes d'argent (art. 790 G)
+            <span class="aide">Donateur de moins de 80 ans, bénéficiaire majeur. Plafond 31 865 €.</span>
+          </label>
+          <div class="input-wrap"><input type="text" id="don790G" inputmode="decimal" value="0"></div>
+        </div>
+
+        <label class="checkbox-row"><input type="checkbox" id="handicap"> Bénéficiaire handicapé (abattement supplémentaire de 159 325 €)</label>
+        <label class="checkbox-row" id="caseFrere" hidden><input type="checkbox" id="exoFrere"> Frère ou sœur exonéré au titre de l'article 796-0 ter</label>
+
+        <button type="button" class="calc-btn" id="calculer">Calculer les droits</button>
+      </form>
+
+      <div class="resultat" id="resultat" aria-live="polite">
+        <div class="vide">Renseignez la situation, puis lancez le calcul.<br>Le détail complet du calcul s'affiche ici.</div>
+      </div>
+
+    </div>
+  </section>
+  </div>
+
+  <!-- ============ MÉMO ============ -->
+  <div class="block-frame">
+  <section class="card" id="memo-section">
+    <div class="card-head">
+      <h2>Mémo fiscal</h2>
+      <span class="tag">Barèmes &amp; abattements</span>
+    </div>
+
+    <details>
+      <summary>Abattements personnels par lien de parenté</summary>
+      <div class="memo-corps">
+        <table>
+          <tr><th>Lien</th><th class="num">Donation</th><th class="num">Succession</th><th>Article</th></tr>
+          <tr><td>Parent → enfant</td><td class="num">100 000 €</td><td class="num">100 000 €</td><td>779-I</td></tr>
+          <tr><td>Grand-parent → petit-enfant</td><td class="num">31 865 €</td><td class="num">1 594 €<span class="ref">sauf représentation</span></td><td>790 B</td></tr>
+          <tr><td>Arrière-grand-parent</td><td class="num">5 310 €</td><td class="num">1 594 €</td><td>790 D</td></tr>
+          <tr><td>Époux / partenaire de PACS</td><td class="num">80 724 €</td><td class="num">Exonéré</td><td>790 E-F / 796-0 bis</td></tr>
+          <tr><td>Frère ou sœur</td><td class="num">15 932 €</td><td class="num">15 932 €</td><td>779-IV</td></tr>
+          <tr><td>Neveu ou nièce</td><td class="num">7 967 €</td><td class="num">7 967 €</td><td>779-V</td></tr>
+          <tr><td>Enfant du conjoint ou du partenaire de PACS <span class="ref">sous condition de prise en charge, succession uniquement — voir ci-dessous</span></td><td class="num">—</td><td class="num">15 932 €</td><td>788, III bis</td></tr>
+          <tr><td>Autre parent, tiers, concubin</td><td class="num">—</td><td class="num">1 594 €</td><td>788-IV</td></tr>
+          <tr><td>Personne handicapée <span class="ref">cumulable avec les autres</span></td><td class="num">+159 325 €</td><td class="num">+159 325 €</td><td>779-II</td></tr>
+        </table>
+        <p>Ces montants ne sont pas revalorisés depuis la loi de finances pour 2013 (à l'exception de l'abattement beau-fils / belle-fille, créé par la loi de finances pour 2026). Ils se renouvellent tous les 15 ans.</p>
+        <p><strong>Enfant du conjoint ou du partenaire de PACS (art. 788, III bis) :</strong> nouvel abattement de 15 932 €, applicable uniquement aux successions ouvertes depuis la loi de finances pour 2026, sous réserve que le défunt ait assuré à cet enfant — sans lien de filiation avec lui — des secours et soins non interrompus au titre d'une prise en charge continue et principale depuis son mariage ou son PACS avec le parent de l'enfant : jusqu'au décès ou au moins 5 ans si l'enfant était mineur au décès ; au moins 5 ans durant sa minorité, ou au moins 10 ans au total, s'il était majeur au décès. Le taux applicable au-delà de l'abattement reste celui des tiers (60 %). Ce dispositif ne concerne pas les donations.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Barème progressif des droits (art. 777)</summary>
+      <div class="memo-corps">
+        <p>Le barème s'applique à la <strong>part nette taxable de chaque bénéficiaire</strong>, jamais à la masse globale.</p>
+        <table>
+          <caption>Ligne directe — donation et succession</caption>
+          <tr><th>Tranche</th><th class="num">Taux</th></tr>
+          <tr><td>Jusqu'à 8 072 €</td><td class="num">5 %</td></tr>
+          <tr><td>8 072 à 12 109 €</td><td class="num">10 %</td></tr>
+          <tr><td>12 109 à 15 932 €</td><td class="num">15 %</td></tr>
+          <tr><td>15 932 à 552 324 €</td><td class="num">20 %</td></tr>
+          <tr><td>552 324 à 902 838 €</td><td class="num">30 %</td></tr>
+          <tr><td>902 838 à 1 805 677 €</td><td class="num">40 %</td></tr>
+          <tr><td>Au-delà de 1 805 677 €</td><td class="num">45 %</td></tr>
+        </table>
+        <table>
+          <caption>Époux et partenaires de PACS — donation uniquement</caption>
+          <tr><th>Tranche</th><th class="num">Taux</th></tr>
+          <tr><td>Jusqu'à 8 072 €</td><td class="num">5 %</td></tr>
+          <tr><td>8 072 à 15 932 €</td><td class="num">10 %</td></tr>
+          <tr><td>15 932 à 31 865 €</td><td class="num">15 %</td></tr>
+          <tr><td>31 865 à 552 324 €</td><td class="num">20 %</td></tr>
+          <tr><td colspan="2">Puis 30 %, 40 % et 45 % aux mêmes seuils que la ligne directe</td></tr>
+        </table>
+        <table>
+          <caption>Collatéraux et non-parents — taux uniques</caption>
+          <tr><th>Lien</th><th class="num">Taux</th></tr>
+          <tr><td>Frère ou sœur, jusqu'à 24 430 €</td><td class="num">35 %</td></tr>
+          <tr><td>Frère ou sœur, au-delà</td><td class="num">45 %</td></tr>
+          <tr><td>Neveu, nièce, parent jusqu'au 4<sup>e</sup> degré</td><td class="num">55 %</td></tr>
+          <tr><td>Parent éloigné, tiers, concubin non pacsé</td><td class="num">60 %</td></tr>
+        </table>
+      </div>
+    </details>
+
+    <details>
+      <summary>Rappel fiscal des 15 ans (art. 784)</summary>
+      <div class="memo-corps">
+        <p>Toute donation consentie depuis moins de 15 ans par le même donateur au même bénéficiaire est réintégrée pour la liquidation des droits. Deux effets, tous deux appliqués par le calculateur :</p>
+        <ul>
+          <li>L'abattement n'est disponible qu'à hauteur du <strong>solde non encore consommé</strong>.</li>
+          <li>La nouvelle transmission est <strong>positionnée dans les tranches supérieures</strong> du barème, au-dessus de la fraction déjà taxée.</li>
+        </ul>
+        <p>Passé 15 ans, l'antériorité est effacée : l'abattement et les tranches basses redeviennent pleinement disponibles.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Exonérations spécifiques aux donations</summary>
+      <div class="memo-corps">
+        <p><strong>Article 790 A bis — don familial affecté au logement.</strong> Créé par la loi de finances pour 2025, il exonère les dons de sommes d'argent dans la double limite de <strong>100 000 € par donateur et 300 000 € par bénéficiaire</strong>, au profit d'un enfant, petit-enfant ou arrière-petit-enfant, ou à défaut de descendance d'un neveu ou d'une nièce.</p>
+        <ul>
+          <li>Fonds employés dans les 6 mois pour un logement neuf ou en VEFA affecté à la résidence principale, ou pour des travaux de rénovation énergétique éligibles.</li>
+          <li>Conservation en résidence principale, occupée ou louée, pendant 5 ans.</li>
+          <li>Cumulable avec l'abattement de droit commun et avec le don familial de l'article 790 G.</li>
+          <li><strong>Dispositif temporaire : dons consentis entre le 15 février 2025 et le 31 décembre 2026.</strong> Au-delà, extinction sauf prorogation par une loi de finances.</li>
+        </ul>
+        <p><strong>Article 790 G — don familial de sommes d'argent.</strong> 31 865 € exonérés par donateur et par bénéficiaire, renouvelable tous les 15 ans. Donateur de moins de 80 ans, bénéficiaire majeur ou émancipé.</p>
+        <p><strong>Cumul maximal parent vers enfant : 231 865 € en franchise totale</strong> (100 000 € au titre du 790 A bis + 31 865 € au titre du 790 G + 100 000 € d'abattement 779), chaque condition devant être remplie séparément.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Exonérations et abattements propres à la succession</summary>
+      <div class="memo-corps">
+        <table>
+          <tr><th>Dispositif</th><th>Effet</th><th>Article</th></tr>
+          <tr><td>Conjoint survivant, partenaire de PACS</td><td>Exonération totale de droits</td><td>796-0 bis</td></tr>
+          <tr><td>Frère ou sœur célibataire, de plus de 50 ans ou infirme, ayant cohabité 5 ans avec le défunt</td><td>Exonération totale</td><td>796-0 ter</td></tr>
+          <tr><td>Résidence principale du défunt, également occupée au jour du décès par le conjoint, le partenaire de PACS ou un enfant mineur ou majeur protégé</td><td>Abattement de 20 % sur la valeur vénale. Ce n'est pas une option : dès que les conditions sont réunies, le notaire doit l'appliquer.</td><td>764 bis</td></tr>
+          <tr><td>Militaires en opération extérieure, sapeurs-pompiers, gendarmes et policiers décédés en service, victimes d'actes de terrorisme</td><td>Exonération totale pour tous les héritiers</td><td>796</td></tr>
+          <tr><td>Pacte Dutreil, titres de société</td><td>Exonération de 75 % de la valeur</td><td>787 B et C</td></tr>
+        </table>
+      </div>
+    </details>
+
+    <details>
+      <summary>Assurance vie : régime hors succession</summary>
+      <div class="memo-corps">
+        <p>Les capitaux décès n'entrent pas dans l'actif successoral. Le régime dépend de l'âge du souscripteur au moment du versement des primes.</p>
+        <table>
+          <tr><th>Primes versées</th><th>Régime</th><th>Article</th></tr>
+          <tr><td>Avant 70 ans</td><td>Abattement de 152 500 € par bénéficiaire, tous contrats confondus. Le solde est soumis à un prélèvement de 20 % sur la fraction taxable jusqu'à 700 000 €, puis 31,25 % au-delà — soit un basculement à 852 500 € de capital reçu.</td><td>990 I</td></tr>
+          <tr><td>Après 70 ans</td><td>Abattement global de 30 500 €, tous bénéficiaires et tous contrats confondus, sur les primes seules. Les produits sont exonérés. Le surplus suit le barème des droits de succession selon le lien de parenté.</td><td>757 B</td></tr>
+        </table>
+        <p>Le conjoint et le partenaire de PACS bénéficiaires sont exonérés dans tous les cas. Un neveu bénéficiaire d'un contrat profite de l'abattement de 152 500 € là où la succession ne lui offrirait que 7 967 € avant un taux de 55 %.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Démembrement : barème de l'usufruit (art. 669)</summary>
+      <div class="memo-corps">
+        <p>Donner la nue-propriété réduit l'assiette taxable. Au décès de l'usufruitier, l'usufruit rejoint la nue-propriété sans droits à payer (art. 1133).</p>
+        <table>
+          <tr><th>Âge de l'usufruitier</th><th class="num">Usufruit</th><th class="num">Nue-propriété</th></tr>
+          <tr><td>Moins de 21 ans</td><td class="num">90 %</td><td class="num">10 %</td></tr>
+          <tr><td>21 à 30 ans</td><td class="num">80 %</td><td class="num">20 %</td></tr>
+          <tr><td>31 à 40 ans</td><td class="num">70 %</td><td class="num">30 %</td></tr>
+          <tr><td>41 à 50 ans</td><td class="num">60 %</td><td class="num">40 %</td></tr>
+          <tr><td>51 à 60 ans</td><td class="num">50 %</td><td class="num">50 %</td></tr>
+          <tr><td>61 à 70 ans</td><td class="num">40 %</td><td class="num">60 %</td></tr>
+          <tr><td>71 à 80 ans</td><td class="num">30 %</td><td class="num">70 %</td></tr>
+          <tr><td>81 à 90 ans</td><td class="num">20 %</td><td class="num">80 %</td></tr>
+          <tr><td>Plus de 91 ans</td><td class="num">10 %</td><td class="num">90 %</td></tr>
+        </table>
+      </div>
+    </details>
+
+  </section>
+  </div>
+
+</main>
+
+<footer>
+  <strong>Outil d'aide à la préparation de dossier, pas un conseil fiscal ni financier.</strong>
+  La liquidation des droits de mutation relève du notaire. Les montants affichés sont indicatifs et supposent une situation simple : ils ne prennent en compte ni les libéralités graduelles ou résiduelles, ni les régimes matrimoniaux particuliers, ni les situations internationales relevant de l'article 750 ter.
+  Barèmes et seuils à vérifier à chaque loi de finances — ils sont regroupés dans l'objet <code>FISCALITE</code> en tête de script.
+</footer>
+
+<script>
+"use strict";
+
+/* =======================================================================
+   PARAMÈTRES FISCAUX — point d'édition unique.
+   Mettre à jour ici à chaque loi de finances, rien d'autre à toucher.
+   État : 1er août 2026.
+   ======================================================================= */
+const FISCALITE = {
+
+  baremes: {
+    ligneDirecte: [[8072,.05],[12109,.10],[15932,.15],[552324,.20],[902838,.30],[1805677,.40],[Infinity,.45]],
+    epouxPacs:    [[8072,.05],[15932,.10],[31865,.15],[552324,.20],[902838,.30],[1805677,.40],[Infinity,.45]],
+    frereSoeur:   [[24430,.35],[Infinity,.45]],
+    neveuNiece:   [[Infinity,.55]],
+    autre:        [[Infinity,.60]]
+  },
+
+  liens: {
+    enfant:            { label:"Enfant (ligne directe)",       don:100000, succ:100000, bareme:"ligneDirecte", exoSucc:false, art:"779-I",  peut790:true  },
+    petitEnfant:       { label:"Petit-enfant",                 don:31865,  succ:1594,   bareme:"ligneDirecte", exoSucc:false, art:"790 B",  peut790:true  },
+    arrierePetitEnfant:{ label:"Arrière-petit-enfant",         don:5310,   succ:1594,   bareme:"ligneDirecte", exoSucc:false, art:"790 D",  peut790:true  },
+    epouxPacs:         { label:"Époux ou partenaire de PACS",  don:80724,  succ:0,      bareme:"epouxPacs",    exoSucc:true,  art:"790 E-F",peut790:false },
+    frereSoeur:        { label:"Frère ou sœur",                don:15932,  succ:15932,  bareme:"frereSoeur",   exoSucc:false, art:"779-IV", peut790:false },
+    neveuNiece:        { label:"Neveu ou nièce",               don:7967,   succ:7967,   bareme:"neveuNiece",   exoSucc:false, art:"779-V",  peut790:true  },
+    beauEnfant:        { label:"Enfant du conjoint ou partenaire de PACS (beau-fils / belle-fille)", don:0, succ:15932, bareme:"autre", exoSucc:false, art:"788 III bis", peut790:false, conditionPriseEnCharge:true },
+    autre:             { label:"Autre parent, tiers, concubin",don:0,      succ:1594,   bareme:"autre",        exoSucc:false, art:"788-IV", peut790:false }
+  },
+
+  abattementHandicap: 159325,
+  plafond790G: 31865,
+  plafond790Abis: 100000,
+  plafondGlobal790Abis: 300000,
+  fin790Abis: "31 décembre 2026",
+  tauxAbattementRP: .20
+};
+
+/* ===================== utilitaires ===================== */
+const euro = n => new Intl.NumberFormat("fr-FR",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(Math.round(n));
+const nombre = n => new Intl.NumberFormat("fr-FR",{maximumFractionDigits:0}).format(Math.round(n));
+const pct = n => new Intl.NumberFormat("fr-FR",{style:"percent",maximumFractionDigits:2}).format(n);
+
+function lire(id){
+  const v = document.getElementById(id).value.replace(/\s|\u202F|€/g,"").replace(",",".");
+  const n = parseFloat(v);
+  return isNaN(n) || n < 0 ? 0 : n;
+}
+function formater(input){
+  const n = parseFloat(input.value.replace(/\s|\u202F|€/g,"").replace(",","."));
+  input.value = isNaN(n) || n < 0 ? "0" : nombre(n);
+}
+
+/* Droits cumulés sur une base, barème par tranches.
+   La DGFiP arrondit à l'euro le produit de chaque tranche, puis additionne.
+   L'arrondi doit donc se faire tranche par tranche, pas sur le total. */
+function droitsCumules(base, bareme){
+  let du = 0, plancher = 0;
+  for (const [plafond, taux] of bareme){
+    if (base <= plancher) break;
+    du += Math.round((Math.min(base, plafond) - plancher) * taux);
+    plancher = plafond;
+  }
+  return du;
+}
+
+/* Ventilation par tranche du segment [debut ; debut+montant] */
+function ventiler(debut, montant, bareme){
+  const lignes = [];
+  let plancher = 0, fin = debut + montant;
+  for (const [plafond, taux] of bareme){
+    const bas = Math.max(plancher, debut);
+    const haut = Math.min(plafond, fin);
+    if (haut > bas) lignes.push({ bas, haut, taux, droits:Math.round((haut-bas)*taux), plafond });
+    plancher = plafond;
+    if (plancher >= fin) break;
+  }
+  return lignes;
+}
+
+/* ===================== état ===================== */
+let nature = "don"; // "don" | "succ"
+
+const els = {
+  lien: document.getElementById("lien"),
+  resultat: document.getElementById("resultat"),
+  champRP: document.getElementById("champRP"),
+  champ790G: document.getElementById("champ790G"),
+  champ790Abis: document.getElementById("champ790Abis"),
+  caseFrere: document.getElementById("caseFrere"),
+  btnDon: document.getElementById("btnDon"),
+  btnSucc: document.getElementById("btnSucc")
+};
+
+for (const [cle, l] of Object.entries(FISCALITE.liens)){
+  els.lien.insertAdjacentHTML("beforeend", `<option value="${cle}">${l.label}</option>`);
+}
+
+function majFormulaire(){
+  const don = nature === "don";
+  els.btnDon.setAttribute("aria-pressed", don);
+  els.btnSucc.setAttribute("aria-pressed", !don);
+  els.champRP.hidden = don;
+  const peut = FISCALITE.liens[els.lien.value].peut790;
+  els.champ790G.hidden = !don || !peut;
+  els.champ790Abis.hidden = !don || !peut;
+  els.caseFrere.hidden = don || els.lien.value !== "frereSoeur";
+}
+
+els.btnDon.addEventListener("click", () => { nature = "don"; majFormulaire(); });
+els.btnSucc.addEventListener("click", () => { nature = "succ"; majFormulaire(); });
+els.lien.addEventListener("change", majFormulaire);
+document.querySelectorAll('input[inputmode="decimal"]').forEach(i => i.addEventListener("blur", () => formater(i)));
+majFormulaire();
+
+/* ===================== calcul ===================== */
+document.getElementById("calculer").addEventListener("click", calculer);
+
+function calculer(){
+  const don = nature === "don";
+  const cle = els.lien.value;
+  const lien = FISCALITE.liens[cle];
+
+  const montant = lire("montant");
+  const anterieures = don ? lire("anterieures") : lire("anterieures");
+  const valeurRP = don ? 0 : lire("valeurRP");
+  const handicap = document.getElementById("handicap").checked;
+  const exoFrere = document.getElementById("exoFrere").checked && !don && cle === "frereSoeur";
+
+  if (montant <= 0){
+    els.resultat.innerHTML = `<div class="vide">Saisissez une part nette supérieure à zéro pour lancer le calcul.</div>`;
+    return;
+  }
+
+  const lignes = [];
+  lignes.push({ libelle:"Part nette revenant au bénéficiaire", ref:"", montant, signe:"" });
+
+  /* Représentation successorale : un descendant venant en représentation de son
+     auteur prédécédé ou renonçant prend la part ET l'abattement de celui-ci,
+     partagé entre les représentants d'une même souche (art. 779-I, al. 2).
+     Le calculateur ne le détecte pas : on avertit dès que le cas est possible. */
+  const representationPossible = !don && (cle === "petitEnfant" || cle === "arrierePetitEnfant");
+
+  /* --- exonérations totales --- */
+  if (!don && lien.exoSucc){
+    return afficher(montant, 0, montant, lignes.concat([
+      { libelle:"Exonération totale du conjoint survivant ou du partenaire de PACS", ref:"art. 796-0 bis", montant:montant, signe:"−", exo:true }
+    ]), [], `Le conjoint survivant et le partenaire de PACS sont totalement exonérés de droits de succession depuis la loi TEPA de 2007. Aucune déclaration de droits n'est due à ce titre.`);
+  }
+  if (exoFrere){
+    return afficher(montant, 0, montant, lignes.concat([
+      { libelle:"Exonération du frère ou de la sœur cohabitant", ref:"art. 796-0 ter", montant:montant, signe:"−", exo:true }
+    ]), [], `Exonération réservée au frère ou à la sœur célibataire, veuf, divorcé ou séparé, âgé de plus de 50 ans ou infirme, et ayant vécu avec le défunt pendant les 5 années précédant le décès. Vérifier les trois conditions avant de retenir ce résultat.`);
+  }
+
+  let base = montant;
+  const alertes = [];
+
+  if (don && anterieures > 0){
+    alertes.push(`<strong>Que compter dans les donations antérieures ?</strong> Seules les donations qui ont consommé l'abattement de droit commun. Les sommes déjà exonérées au titre du don familial (art. 790 G) ou du don affecté au logement (art. 790 A bis) n'entament pas cet abattement : les inclure ici surestimerait les droits.`);
+  }
+
+  if (representationPossible){
+    const parent = FISCALITE.liens.enfant.succ;
+    alertes.push(`<strong>Vient-il en représentation ?</strong> Le calcul ci-dessous applique l'abattement de ${euro(FISCALITE.liens[cle].succ)} du lien direct. Si le bénéficiaire hérite en représentation de son auteur prédécédé ou renonçant, il prend la part <em>et</em> l'abattement de celui-ci, soit ${euro(parent)} à partager entre les représentants d'une même souche (art. 779-I). Dans ce cas, sélectionnez « Enfant » et saisissez la quote-part revenant à ce bénéficiaire.`);
+  }
+
+  if (lien.conditionPriseEnCharge){
+    if (!don){
+      alertes.push(`<strong>Abattement conditionné à la prise en charge du beau-parent.</strong> Les 15 932 € (art. 788, III bis, créé par la loi de finances pour 2026) ne s'appliquent que si le défunt a assuré à cet enfant des secours et soins non interrompus, au titre d'une prise en charge continue et principale, depuis son mariage ou son PACS avec le parent de l'enfant : jusqu'au décès ou au moins 5 ans si l'enfant était mineur au décès ; au moins 5 ans durant sa minorité, ou au moins 10 ans au total (minorité et majorité), s'il était majeur au décès. À défaut de remplir ces conditions, seul l'abattement de 1 594 € prévu pour les tiers s'applique : sélectionnez alors « Autre parent, tiers, concubin ».`);
+    } else {
+      alertes.push(`<strong>Cet abattement ne s'applique pas aux donations.</strong> L'article 788, III bis issu de la loi de finances pour 2026 ne concerne que les droits de mutation par décès. En donation, l'enfant du conjoint ou du partenaire de PACS reste taxé comme un tiers sans lien de parenté (abattement de 1 594 €, taux de 60 %) : sélectionnez « Autre parent, tiers, concubin » pour un calcul de donation.`);
+    }
+  }
+
+  /* --- abattement 20 % résidence principale --- */
+  if (!don && valeurRP > 0){
+    const ab = Math.min(valeurRP, base) * FISCALITE.tauxAbattementRP;
+    base -= ab;
+    lignes.push({ libelle:`Abattement de 20 % sur la résidence principale (${euro(valeurRP)})`, ref:"art. 764 bis", montant:ab, signe:"−" });
+  }
+
+  /* --- exonérations affectées (donation) --- */
+  let exo790Abis = 0, exo790G = 0;
+  if (don && lien.peut790){
+    exo790Abis = Math.min(lire("don790Abis"), FISCALITE.plafond790Abis, base);
+    if (exo790Abis > 0){
+      base -= exo790Abis;
+      lignes.push({ libelle:"Don affecté au logement, exonéré", ref:"art. 790 A bis", montant:exo790Abis, signe:"−", exo:true });
+      alertes.push(`Le dispositif de l'article 790 A bis s'éteint le ${FISCALITE.fin790Abis}. Les fonds doivent être employés dans les 6 mois et le logement conservé en résidence principale pendant 5 ans, sous peine de remise en cause. Le plafond global est de ${euro(FISCALITE.plafondGlobal790Abis)} par bénéficiaire, tous donateurs confondus.`);
+    }
+    exo790G = Math.min(lire("don790G"), FISCALITE.plafond790G, base);
+    if (exo790G > 0){
+      base -= exo790G;
+      lignes.push({ libelle:"Don familial de sommes d'argent, exonéré", ref:"art. 790 G", montant:exo790G, signe:"−", exo:true });
+    }
+  }
+
+  /* --- abattement personnel et rappel fiscal --- */
+  const abattementPlein = (don ? lien.don : lien.succ) + (handicap ? FISCALITE.abattementHandicap : 0);
+  const consomme = Math.min(anterieures, abattementPlein);
+  const abattementDisponible = Math.max(0, abattementPlein - consomme);
+  const abattementApplique = Math.min(abattementDisponible, base);
+
+  if (abattementPlein > 0){
+    let ref = handicap ? `${lien.art} et 779-II` : lien.art;
+    if (anterieures > 0) ref += ` — rappel de ${euro(consomme)} déjà consommés (art. 784)`;
+    lignes.push({ libelle:"Abattement personnel", ref, montant:abattementApplique, signe:"−" });
+  }
+  base -= abattementApplique;
+
+  /* --- barème, positionné au-dessus de la fraction déjà taxée --- */
+  const bareme = FISCALITE.baremes[lien.bareme];
+  const dejaTaxe = Math.max(0, anterieures - abattementPlein);
+  const droitsBruts = droitsCumules(dejaTaxe + base, bareme) - droitsCumules(dejaTaxe, bareme);
+  const ventilation = base > 0 ? ventiler(dejaTaxe, base, bareme) : [];
+
+  if (dejaTaxe > 0){
+    alertes.push(`Rappel fiscal : ${euro(dejaTaxe)} ont déjà été taxés lors des donations antérieures. La transmission actuelle démarre donc directement dans les tranches supérieures du barème.`);
+  }
+
+  lignes.push({ libelle:"Part nette taxable", ref:"assiette du barème", montant:base, signe:"=", total:true });
+
+  afficher(montant, droitsBruts, montant - droitsBruts, lignes, ventilation, "", alertes);
+}
+
+/* ===================== rendu ===================== */
+function afficher(montant, droits, net, lignes, ventilation, message, alertes){
+  alertes = alertes || [];
+  const tauxMoyen = montant > 0 ? droits / montant : 0;
+
+  let html = `
+    <div class="synthese">
+      <div class="kpi droits"><span>Droits à payer</span><strong>${euro(droits)}</strong></div>
+      <div class="kpi net"><span>Reçu net</span><strong>${euro(net)}</strong></div>
+      <div class="kpi"><span>Taux moyen</span><strong>${pct(tauxMoyen)}</strong></div>
+    </div>
+
+    <table>
+      <caption>Détermination de l'assiette</caption>
+      <tr><th>Étape</th><th class="num">Montant</th></tr>`;
+
+  for (const l of lignes){
+    const cls = l.total ? ' class="total"' : (l.exo ? ' class="exo"' : "");
+    html += `<tr${cls}><td>${l.libelle}${l.ref ? `<span class="ref">${l.ref}</span>` : ""}</td>
+             <td class="num">${l.signe} ${euro(l.montant)}</td></tr>`;
+  }
+  html += `</table>`;
+
+  if (ventilation && ventilation.length){
+    html += `<table><caption>Application du barème, tranche par tranche</caption>
+      <tr><th>Tranche</th><th class="num">Fraction taxée</th><th class="num">Taux</th><th class="num">Droits</th></tr>`;
+    for (const t of ventilation){
+      const borne = t.plafond === Infinity ? "au-delà" : `jusqu'à ${nombre(t.plafond)} €`;
+      html += `<tr><td>De ${nombre(t.bas)} à ${nombre(t.haut)} €<span class="ref">tranche ${borne}</span></td>
+               <td class="num">${euro(t.haut - t.bas)}</td>
+               <td class="num">${pct(t.taux)}</td>
+               <td class="num">${euro(t.droits)}</td></tr>`;
+    }
+    html += `<tr class="total"><td>Droits dus</td><td class="num"></td><td class="num"></td><td class="num">${euro(droits)}</td></tr></table>`;
+  } else if (droits === 0 && !message){
+    html += `<div class="note">Aucun droit dû : les exonérations et l'abattement absorbent la totalité de la part transmise.</div>`;
+  }
+
+  if (message) html += `<div class="note">${message}</div>`;
+  for (const a of alertes) html += `<div class="note alerte">${a}</div>`;
+
+  html += `<div class="note">Résultat indicatif, hors émoluments du notaire et hors frais d'acte. Il ne constitue pas un conseil fiscal.</div>`;
+
+  els.resultat.innerHTML = html;
+}
+</script>
+
+<button id="backToTop" class="back-to-top" aria-label="Revenir en haut de la page" title="Revenir en haut">↑</button>
+<script>
+(function(){
+  var btn = document.getElementById('backToTop');
+  if(!btn) return;
+  window.addEventListener('scroll', function(){
+    if(window.scrollY > 400){ btn.classList.add('show'); } else { btn.classList.remove('show'); }
+  });
+  btn.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+})();
+</script>
+</body>
+</html>

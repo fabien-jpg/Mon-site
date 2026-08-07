@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Livrets et comptes d'épargne — Facilpro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <p class="eyebrow">Référence — épargne monétaire</p>
+  <h1>Quel livret, pour quel usage ?</h1>
+  <p>Les caractéristiques de tous les produits d'épargne monétaire courants — livrets réglementés exonérés, épargne logement et comptes bancaires classiques — pour situer en un coup d'œil plafond, versement minimum, rémunération et fiscalité. Page de référence, pas de simulateur.</p>
+</header>
+
+<main>
+
+  <nav class="chip-nav">
+    <a href="index.html" class="chip-home">← Accueil</a>
+    <a href="#reglementes">Livrets réglementés</a>
+    <a href="#epargne-logement">Épargne logement</a>
+    <a href="#bancaire">Épargne bancaire</a>
+  </nav>
+
+  <div class="block-frame">
+  <section class="card">
+    <div class="card-head">
+      <h2>Livrets et comptes d'épargne</h2>
+      <span class="tag">Taux en vigueur au 1ᵉʳ août 2026</span>
+    </div>
+
+    <!-- ============ LIVRETS RÉGLEMENTÉS EXONÉRÉS ============ -->
+    <div class="ref-section" id="reglementes">
+      <div class="ref-section-head"><h3>Livrets réglementés exonérés</h3><span>4 produits</span></div>
+      <p class="ref-section-note">Capital garanti par l'État, intérêts calculés par quinzaine, disponibilité immédiate, totalement exonérés d'impôt sur le revenu et de prélèvements sociaux. Un seul Livret A, un seul LDDS et un seul LEP par personne (hors exceptions historiques).</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Produit</th>
+              <th class="num">Taux</th>
+              <th class="num">Plafond</th>
+              <th class="num">Versement min.</th>
+              <th>Conditions</th>
+              <th>Fiscalité</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Livret A</td>
+              <td class="num">1,70 %</td>
+              <td class="num">22 950 €</td>
+              <td class="num">10 €</td>
+              <td>Aucune — accessible à tout le monde, y compris mineurs</td>
+              <td><span class="pastille pastille-exo">Exonéré</span></td>
+            </tr>
+            <tr>
+              <td>LDDS <span style="font-weight:400;color:var(--muted);">(développement durable et solidaire)</span></td>
+              <td class="num">1,70 %</td>
+              <td class="num">12 000 €</td>
+              <td class="num">15 €</td>
+              <td>Majeur, résident fiscal en France</td>
+              <td><span class="pastille pastille-exo">Exonéré</span></td>
+            </tr>
+            <tr>
+              <td>LEP <span style="font-weight:400;color:var(--muted);">(épargne populaire)</span></td>
+              <td class="num">2,50 %</td>
+              <td class="num">10 000 €</td>
+              <td class="num">30 €</td>
+              <td>Revenu fiscal de référence 2024 &lt; 22 823 € (1 part), majoré selon quotient familial</td>
+              <td><span class="pastille pastille-exo">Exonéré</span></td>
+            </tr>
+            <tr>
+              <td>Livret Jeune</td>
+              <td class="num">1,70 % ou +</td>
+              <td class="num">1 600 €</td>
+              <td class="num">10 €</td>
+              <td>12 à 25 ans, résident fiscal en France</td>
+              <td><span class="pastille pastille-exo">Exonéré</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="legende">Le taux du Livret Jeune est fixé librement par chaque banque, avec un plancher réglementaire égal au taux du Livret A — certains établissements proposent davantage pour attirer une clientèle jeune.</p>
+    </div>
+
+    <!-- ============ ÉPARGNE LOGEMENT ============ -->
+    <div class="ref-section" id="epargne-logement">
+      <div class="ref-section-head"><h3>Épargne logement</h3><span>2 produits</span></div>
+      <p class="ref-section-note">Ouvrent des droits à un prêt immobilier à taux préférentiel. Depuis 2018, plus de prime d'État à l'ouverture (sauf plans plus anciens sous conditions) et fiscalisation dès le premier euro d'intérêts.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Produit</th>
+              <th class="num">Taux</th>
+              <th class="num">Plafond</th>
+              <th class="num">Versement min.</th>
+              <th>Durée &amp; engagement</th>
+              <th>Fiscalité</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CEL <span style="font-weight:400;color:var(--muted);">(compte épargne logement)</span></td>
+              <td class="num">1,25 % brut</td>
+              <td class="num">15 300 €</td>
+              <td class="num">300 € <span class="ref">(solde min.)</span></td>
+              <td>Aucun engagement de durée, retraits libres</td>
+              <td><span class="pastille pastille-fisc">PFU 30 %</span></td>
+            </tr>
+            <tr>
+              <td>PEL <span style="font-weight:400;color:var(--muted);">(plan épargne logement)</span></td>
+              <td class="num">≈ 2 % brut <span class="ref">(fixé à l'ouverture)</span></td>
+              <td class="num">61 200 €</td>
+              <td class="num">225 € ouverture <span class="ref">puis 540 €/an min.</span></td>
+              <td>4 ans min. pour les droits à prêt, 10 ans max. de versements</td>
+              <td><span class="pastille pastille-fisc">PFU 30 %</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="legende">Le taux du PEL est fixé à l'ouverture et garanti pendant toute la durée du plan : un PEL ouvert en 2024 ou 2025 conserve son taux d'origine, différent de celui d'un PEL ouvert aujourd'hui. Le taux affiché ici concerne uniquement les nouvelles ouvertures. Le PFU de 30 % (12,8 % IR + 17,2 % PS) s'applique au CEL et au PEL — ces deux produits ne sont pas concernés par la hausse des prélèvements sociaux à 18,6 % de 2026.</p>
+    </div>
+
+    <!-- ============ ÉPARGNE BANCAIRE CLASSIQUE ============ -->
+    <div class="ref-section" id="bancaire">
+      <div class="ref-section-head"><h3>Épargne bancaire classique</h3><span>2 produits</span></div>
+      <p class="ref-section-note">Sans plafond réglementaire ni exonération : chaque banque fixe librement ses conditions. Utiles au-delà des plafonds des livrets réglementés, ou pour un taux promotionnel de bienvenue.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Produit</th>
+              <th class="num">Taux</th>
+              <th class="num">Plafond</th>
+              <th class="num">Versement min.</th>
+              <th>Disponibilité</th>
+              <th>Fiscalité</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Livret bancaire non réglementé</td>
+              <td class="num">Libre <span class="ref">(souvent promotionnel)</span></td>
+              <td class="num">Aucun</td>
+              <td class="num">Variable selon banque</td>
+              <td>Immédiate</td>
+              <td><span class="pastille pastille-fisc">PFU 31,4 %</span></td>
+            </tr>
+            <tr>
+              <td>Compte à terme</td>
+              <td class="num">Fixé au contrat</td>
+              <td class="num">Aucun</td>
+              <td class="num">Variable selon banque</td>
+              <td>Bloquée <span class="ref">(pénalités en cas de retrait anticipé)</span></td>
+              <td><span class="pastille pastille-fisc">PFU 31,4 %</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="legende">PFU = 12,8 % d'impôt sur le revenu + 18,6 % de prélèvements sociaux depuis le 1ᵉʳ janvier 2026 (LFSS 2026). L'option pour le barème progressif de l'impôt sur le revenu reste possible si elle est plus avantageuse — voir le <a href="epargne.html" style="color:var(--brass-deep);">simulateur d'épargne</a> pour un calcul chiffré selon votre situation.</p>
+    </div>
+
+  </section>
+  </div>
+
+</main>
+
+<footer>
+  Document d'information, pas un conseil fiscal ni financier. Les taux des produits réglementés (Livret A, LDDS, LEP, Livret Jeune, CEL) sont révisés par l'État, généralement au 1ᵉʳ février et au 1ᵉʳ août de chaque année, et peuvent changer sans préavis. Le taux du PEL, lui, est fixé une fois pour toutes à l'ouverture du plan. Vérifiez les conditions exactes (versement minimum, frais éventuels) auprès de chaque établissement, qui peut ajouter ses propres règles à celles fixées par la réglementation.
+</footer>
+
+<button id="backToTop" class="back-to-top" aria-label="Revenir en haut de la page" title="Revenir en haut">↑</button>
+<script>
+(function(){
+  var btn = document.getElementById('backToTop');
+  if(!btn) return;
+  window.addEventListener('scroll', function(){
+    if(window.scrollY > 400){ btn.classList.add('show'); } else { btn.classList.remove('show'); }
+  });
+  btn.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+})();
+</script>
+</body>
+</html>
