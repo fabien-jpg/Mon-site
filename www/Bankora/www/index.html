@@ -11,28 +11,10 @@
 <style>
 /* =========================================================
    Styles spécifiques à la page d'accueil.
-   Le composant carte (.card-grid / .service-card) vit dans
-   style.css, partagé avec le hub de navigation du simulateur
-   de crédit. Ici : uniquement la ligne de repères et l'en-tête
-   du sommaire.
+   Le composant carte (.card-grid / .service-card) et le hero
+   (.hero / .demo-card / boutons) vivent dans style.css, partagés
+   avec le reste du site.
    ========================================================= */
-.meta-row{
-  display:flex;
-  flex-wrap:wrap;
-  gap:0;
-  margin-top:22px;
-  font-family:'Manrope',sans-serif;
-  font-size:11.5px;
-  letter-spacing:.04em;
-  text-transform:uppercase;
-  color:var(--muted);
-}
-.meta-row span{
-  padding:0 14px 0 0;
-  margin-right:14px;
-  border-right:1px solid var(--border);
-}
-.meta-row span:last-child{border-right:0;}
 </style>
 </head>
 <body>
@@ -68,26 +50,51 @@
 </header>
 
 
-<header class="top">
-  <h1>Le copilote des conseillers en crédit, épargne, transmission et fiscalité</h1>
-  <p>Bankora rassemble des outils pensés pour vos missions du quotidien : monter un dossier de crédit, éclairer une stratégie d'épargne, préparer une transmission ou vérifier une fiscalité. Tout se calcule directement dans votre navigateur, sans compte ni saisie transmise à un serveur.</p>
-  <div class="meta-row">
-    <span>100 % gratuit</span>
-    <span>Aucune donnée envoyée</span>
-    <span>Chiffres à jour au 1ᵉʳ août 2026</span>
-  </div>
-</header>
-
 <main>
 
-  <div class="index-head">
-    <h2>Sommaire</h2>
-    <span>6 modules</span>
+  <div class="hero">
+    <div>
+      <span class="hero-eyebrow">100 % gratuit · rien ne quitte votre navigateur</span>
+      <h1>Le dossier de votre client,<br>calculé <em>à la seconde</em></h1>
+      <p class="hero-sub">Crédit immobilier, épargne, transmission et fiscalité : six outils pensés pour aller vite entre deux rendez-vous, sans jamais faire sortir une donnée de votre poste.</p>
+      <div class="hero-ctas">
+        <a href="simulateurs.html" class="btn-primary">Ouvrir un simulateur</a>
+        <a href="#outils" class="btn-ghost">Voir les 6 outils</a>
+      </div>
+      <div class="trust-row">
+        <span class="trust-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 3 6v6c0 5 4 9 9 10 5-1 9-5 9-10V6z"/></svg>Aucune donnée envoyée</span>
+        <span class="trust-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Résultat immédiat</span>
+        <span class="trust-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>Chiffres à jour août 2026</span>
+      </div>
+    </div>
+
+    <div class="demo-card">
+      <div class="demo-head">
+        <p>Capacité d'emprunt</p>
+        <span class="demo-live"><span></span>aperçu live</span>
+      </div>
+      <div class="demo-field">
+        <label>Revenus nets mensuels <b id="heroRevLabel">3 200 €</b></label>
+        <input type="range" id="heroRevenu" min="1500" max="8000" step="50" value="3200">
+      </div>
+      <div class="demo-result">
+        <p>Mensualité maximale (35 %)</p>
+        <div class="num" id="heroMensu">1 <span>120 €</span> / mois</div>
+        <div class="demo-bar"><div class="demo-bar-fill"></div></div>
+      </div>
+      <p class="demo-note">Aperçu simplifié — le simulateur complet intègre charges, assurance et quotité</p>
+    </div>
+  </div>
+
+  <div class="index-head" id="outils">
+    <h2>Six outils, un seul réflexe</h2>
+    <span>100 % gratuit</span>
   </div>
 
   <div class="card-grid">
 
-    <a class="service-card" href="simulateurs.html">
+    <a class="service-card featured" href="simulateurs.html">
+      <span class="service-card-badge">Le plus utilisé</span>
       <span class="service-card__icon-badge">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 L12 4 L20 12"/><path d="M6.5 10.5 V20 H17.5 V10.5"/></svg>
       </span>
@@ -178,6 +185,26 @@
 <footer>
   Outils d'aide à la préparation de dossier, à destination des conseillers bancaires et courtiers. Ils ne constituent ni un conseil financier, ni un conseil fiscal. Les résultats affichés sont indicatifs.
 </footer>
+
+<script>
+(function(){
+  var slider = document.getElementById('heroRevenu');
+  var revLabel = document.getElementById('heroRevLabel');
+  var mensu = document.getElementById('heroMensu');
+  if(!slider) return;
+
+  function fmt(n){ return Math.round(n).toLocaleString('fr-FR'); }
+
+  function update(){
+    var rev = parseInt(slider.value, 10);
+    var max = Math.round(rev * 0.35 / 10) * 10;
+    revLabel.textContent = fmt(rev) + ' €';
+    mensu.innerHTML = fmt(max) + ' <span>€</span> / mois';
+  }
+  slider.addEventListener('input', update);
+  update();
+})();
+</script>
 
 </body>
 </html>

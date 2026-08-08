@@ -19,80 +19,12 @@
 
 body{padding-bottom:0;}
 
-.page-nav-wrap{
-  max-width:960px;
-  margin:0 auto;
-  padding:0 24px;
-}
-
 /* ---------- Écran d'accueil du module ---------- */
 .rl-home{
   max-width:960px;
   margin:0 auto;
-  padding:40px 24px 64px;
+  padding:24px 24px 64px;
 }
-
-.rl-dossiers{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:24px;
-}
-.rl-dossier{
-  text-align:left;
-  cursor:pointer;
-  border-radius:4px;
-  padding:30px 28px;
-  position:relative;
-  transition:transform .3s cubic-bezier(.2,.7,.3,1), box-shadow .3s ease, border-color .3s ease;
-}
-.rl-dossier:hover{
-  transform:translateY(-4px);
-  box-shadow:0 18px 40px -18px rgba(27,35,64,.35);
-}
-.rl-dossier-light{
-  background:var(--surface);
-  border:1px solid var(--border);
-}
-.rl-dossier-light:hover{border-color:var(--brass);}
-.rl-dossier-dark{
-  background:var(--ink);
-  border:1px solid var(--ink);
-}
-.rl-dossier-dark:hover{border-color:var(--brass);}
-.rl-dossier-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-}
-.rl-dossier-tag{
-  font-family:'Manrope',sans-serif;
-  font-size:11px;
-  letter-spacing:.08em;
-}
-.rl-dossier-light .rl-dossier-tag{color:var(--brass-deep);}
-.rl-dossier-dark .rl-dossier-tag{color:var(--brass-light);}
-.rl-dossier h2{
-  font-family:'Manrope',sans-serif;
-  font-size:24px;
-  font-weight:600;
-  margin:16px 0 8px;
-}
-.rl-dossier-light h2{color:var(--ink);}
-.rl-dossier-dark h2{color:var(--surface);}
-.rl-dossier p{
-  font-size:13.5px;
-  line-height:1.55;
-  margin:0;
-}
-.rl-dossier-light p{color:var(--muted);}
-.rl-dossier-dark p{color:rgba(255,255,255,.68);}
-.rl-dossier-cta{
-  margin-top:20px;
-  font-size:12.5px;
-  font-weight:600;
-}
-.rl-dossier-light .rl-dossier-cta{color:var(--forest);}
-.rl-dossier-dark .rl-dossier-cta{color:var(--brass-light);}
 
 .rl-home-foot{
   text-align:center;
@@ -101,37 +33,18 @@ body{padding-bottom:0;}
   margin-top:40px;
 }
 
-/* ---------- En-tête d'outil (retour + titre) ---------- */
+/* ---------- En-tête d'outil (fil d'Ariane + titre) ---------- */
 .rl-tool-header{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  padding:20px 24px;
-  border-bottom:1px solid var(--border);
-  background:var(--surface);
-  max-width:100%;
+  max-width:960px;
+  margin:0 auto;
+  padding:24px 24px 0;
 }
-.rl-back-btn{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  background:transparent;
-  border:1px solid var(--border);
-  border-radius:3px;
-  padding:7px 12px;
-  cursor:pointer;
-  font-family:'Manrope',sans-serif;
-  font-size:12.5px;
-  color:var(--ink);
-  transition:border-color .15s ease, background .15s ease;
-}
-.rl-back-btn:hover{border-color:var(--ink); background:var(--surface-alt);}
-.rl-tool-header-divider{width:1px;height:20px;background:var(--border);}
 .rl-tool-header h2{
   font-family:'Manrope',sans-serif;
-  font-size:18px;
-  font-weight:600;
-  margin:0;
+  font-size:26px;
+  font-weight:800;
+  letter-spacing:-.01em;
+  margin:0 0 22px;
   color:var(--ink);
 }
 
@@ -322,39 +235,37 @@ body{padding-bottom:0;}
   <p>Prix d'achat, loyer, charges, financement et régime fiscal : estimez la rentabilité brute et nette, le cash-flow mensuel et ce qu'il en reste après impôt. Deux niveaux d'analyse sont proposés ci-dessous, du calcul rapide à l'étude complète.</p>
 </header>
 
-<div class="page-nav-wrap">
-  <nav class="quick-nav">
-    <a href="index.html" class="quick-nav-home">← Accueil</a>
-  </nav>
-</div>
-
 <!-- ============ ÉCRAN D'ACCUEIL DU MODULE ============ -->
 <div id="view-home">
   <div class="rl-home">
+    <nav class="sim-breadcrumb" aria-label="Fil d'Ariane" style="margin-bottom:26px;">
+      <a href="index.html">Accueil</a>
+      <span class="sep">/</span>
+      <span class="current">Investissement locatif</span>
+    </nav>
+
     <div class="index-head" style="margin-bottom:22px;">
       <h2>Dossiers disponibles</h2>
       <span>2 simulateurs</span>
     </div>
 
-    <div class="rl-dossiers">
-      <div class="rl-dossier rl-dossier-light" id="btnOpenSimple" role="button" tabindex="0">
-        <div class="rl-dossier-top">
-          <span class="rl-dossier-tag">DOSSIER 01</span>
-          <span style="color:var(--brass-deep);font-size:18px;">%</span>
-        </div>
-        <h2>Simulateur simple</h2>
-        <p>Prix, loyer, charges essentielles et crédit. Rentabilité brute, nette et cash-flow mensuel en quelques champs.</p>
-        <div class="rl-dossier-cta">Ouvrir le dossier →</div>
+    <div class="card-grid">
+      <div class="service-card" id="btnOpenSimple" role="button" tabindex="0">
+        <span class="service-card__icon-badge">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M7 19V11"/><path d="M12 19V6"/><path d="M17 19v-8"/></svg>
+        </span>
+        <p class="service-card__title">Simulateur simple</p>
+        <p class="service-card__desc">Prix, loyer, charges essentielles et crédit. Rentabilité brute, nette et cash-flow mensuel en quelques champs.</p>
+        <span class="service-card__cta">Ouvrir <span class="arrow">→</span></span>
       </div>
 
-      <div class="rl-dossier rl-dossier-dark" id="btnOpenAdvanced" role="button" tabindex="0">
-        <div class="rl-dossier-top">
-          <span class="rl-dossier-tag">DOSSIER 02</span>
-          <span style="color:var(--brass-light);font-size:16px;">⟋</span>
-        </div>
-        <h2>Simulateur avancé</h2>
-        <p>Financement détaillé, régime fiscal (micro-foncier, réel, LMNP), TMI et cash-flow net d'impôt.</p>
-        <div class="rl-dossier-cta">Ouvrir le dossier →</div>
+      <div class="service-card" id="btnOpenAdvanced" role="button" tabindex="0">
+        <span class="service-card__icon-badge">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l3.5-4 3 3L19 8"/></svg>
+        </span>
+        <p class="service-card__title">Simulateur avancé</p>
+        <p class="service-card__desc">Financement détaillé, régime fiscal (micro-foncier, réel, LMNP), TMI et cash-flow net d'impôt.</p>
+        <span class="service-card__cta">Ouvrir <span class="arrow">→</span></span>
       </div>
     </div>
 
@@ -365,8 +276,13 @@ body{padding-bottom:0;}
 <!-- ============ SIMULATEUR SIMPLE ============ -->
 <div id="view-simple" style="display:none;">
   <div class="rl-tool-header">
-    <button class="rl-back-btn" id="btnBackFromSimple">← Retour</button>
-    <div class="rl-tool-header-divider"></div>
+    <nav class="sim-breadcrumb" aria-label="Fil d'Ariane">
+      <a href="index.html">Accueil</a>
+      <span class="sep">/</span>
+      <a href="#" id="breadcrumbHomeSimple">Investissement locatif</a>
+      <span class="sep">/</span>
+      <span class="current">Simulateur simple</span>
+    </nav>
     <h2>Simulateur simple</h2>
   </div>
 
@@ -422,8 +338,13 @@ body{padding-bottom:0;}
 <!-- ============ SIMULATEUR AVANCÉ ============ -->
 <div id="view-advanced" style="display:none;">
   <div class="rl-tool-header">
-    <button class="rl-back-btn" id="btnBackFromAdvanced">← Retour</button>
-    <div class="rl-tool-header-divider"></div>
+    <nav class="sim-breadcrumb" aria-label="Fil d'Ariane">
+      <a href="index.html">Accueil</a>
+      <span class="sep">/</span>
+      <a href="#" id="breadcrumbHomeAdvanced">Investissement locatif</a>
+      <span class="sep">/</span>
+      <span class="current">Simulateur avancé</span>
+    </nav>
     <h2>Simulateur avancé</h2>
   </div>
 
@@ -591,8 +512,8 @@ function showView(id){
 }
 document.getElementById('btnOpenSimple').addEventListener('click', () => showView('view-simple'));
 document.getElementById('btnOpenAdvanced').addEventListener('click', () => showView('view-advanced'));
-document.getElementById('btnBackFromSimple').addEventListener('click', () => showView('view-home'));
-document.getElementById('btnBackFromAdvanced').addEventListener('click', () => showView('view-home'));
+document.getElementById('breadcrumbHomeSimple').addEventListener('click', (e) => { e.preventDefault(); showView('view-home'); });
+document.getElementById('breadcrumbHomeAdvanced').addEventListener('click', (e) => { e.preventDefault(); showView('view-home'); });
 // Accessibilité clavier sur les dossiers de l'accueil (rôle "button")
 ['btnOpenSimple','btnOpenAdvanced'].forEach(id => {
   document.getElementById(id).addEventListener('keydown', function(e){
